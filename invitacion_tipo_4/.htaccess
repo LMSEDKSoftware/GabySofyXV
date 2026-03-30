@@ -1,0 +1,5 @@
+# Apache: usar esta carpeta como raíz del sitio (public_html, htdocs, www)
+DirectoryIndex index.html
+<IfModule mod_negotiation.c>
+  Options -MultiViews
+</IfModule>

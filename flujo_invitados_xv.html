@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flujo de Invitados – XV Años</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --purple: #7B2FBE;
+  --purple-deep: #5B1F9A;
+  --purple-pale: #EDE8F8;
+  --purple-light: #9B6FD4;
+  --green: #22C55E;
+  --green-pale: #DCFCE7;
+  --orange: #F97316;
+  --orange-pale: #FFF1E6;
+  --blue: #3B82F6;
+  --blue-pale: #EFF6FF;
+  --red: #EF4444;
+  --red-pale: #FEF2F2;
+  --gray: #6B7280;
+  --gray-pale: #F9FAFB;
+  --gray-border: #E5E7EB;
+  --text: #111827;
+  --text-mid: #374151;
+  --text-light: #9CA3AF;
+  --bg: #F8F7FF;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* HEADER */
+header {
+  background: white;
+  border-bottom: 1px solid var(--gray-border);
+  padding: 20px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+}
+header h1 { font-size: 18px; font-weight: 700; color: var(--text); }
+header p { font-size: 13px; color: var(--text-light); margin-top: 2px; }
+.legend {
+  display: flex; gap: 16px; flex-wrap: wrap;
+}
+.leg { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-mid); }
+.leg-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+/* MAIN CANVAS */
+.canvas {
+  padding: 40px 24px 60px;
+  overflow-x: auto;
+}
+
+/* SWIMLANES */
+.swimlane-container {
+  display: flex;
+  gap: 0;
+  min-width: 900px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.lane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.lane-header {
+  width: 100%;
+  text-align: center;
+  padding: 12px 8px;
+  border-radius: 12px 12px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  position: sticky;
+  top: 73px;
+  z-index: 10;
+}
+
+.lane-header.admin { background: var(--purple-pale); color: var(--purple-deep); }
+.lane-header.sistema { background: var(--blue-pale); color: var(--blue); }
+.lane-header.whatsapp { background: var(--green-pale); color: #15803D; }
+.lane-header.invitado { background: var(--orange-pale); color: #C2410C; }
+
+/* LANE LINES */
+.lane::after {
+  content: '';
+  position: absolute;
+  top: 52px;
+  left: 50%;
+  width: 1px;
+  height: calc(100% - 52px);
+  background: var(--gray-border);
+  z-index: 0;
+}
+.lane:last-child::after { display: none; }
+
+/* NODES */
+.node {
+  position: relative;
+  z-index: 1;
+  width: 88%;
+  border-radius: 12px;
+  padding: 14px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: center;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.18s;
+  margin-bottom: 4px;
+}
+.node:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+.node.admin   { background: white; border-color: var(--purple); color: var(--purple-deep); }
+.node.sistema { background: white; border-color: var(--blue); color: #1D4ED8; }
+.node.whatsapp{ background: white; border-color: #22C55E; color: #15803D; }
+.node.invitado{ background: white; border-color: var(--orange); color: #C2410C; }
+.node.decision{
+  background: white;
+  border-style: dashed;
+  border-width: 2px;
+  position: relative;
+}
+.node.decision::before {
+  content: '⬦';
+  font-size: 10px;
+  position: absolute;
+  top: -8px; left: 50%; transform: translateX(-50%);
+  background: white; padding: 0 3px;
+  color: var(--gray);
+}
+.node.start {
+  border-radius: 100px;
+  background: var(--purple);
+  color: white;
+  border-color: var(--purple);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+}
+.node.end {
+  border-radius: 100px;
+  background: var(--green);
+  color: white;
+  border-color: var(--green);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+}
+.node.end-alt {
+  border-radius: 100px;
+  background: var(--gray);
+  color: white;
+  border-color: var(--gray);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+}
+.node .node-num {
+  display: inline-block;
+  width: 20px; height: 20px;
+  background: rgba(0,0,0,0.06);
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 20px;
+  margin-bottom: 4px;
+}
+.node-sub {
+  font-size: 11px;
+  opacity: 0.65;
+  margin-top: 4px;
+  font-weight: 400;
+}
+
+/* ARROWS */
+.arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 88%;
+  margin: 0 auto;
+  z-index: 1;
+  position: relative;
+}
+.arrow-line {
+  width: 1.5px;
+  height: 24px;
+  background: var(--gray-border);
+}
+.arrow-head {
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 7px solid var(--gray-border);
+}
+.arrow-label {
+  font-size: 10px;
+  color: var(--text-light);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  margin: 2px 0;
+  background: var(--bg);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.arrow.yes .arrow-label { color: var(--green); }
+.arrow.no  .arrow-label { color: var(--red); }
+.arrow.yes .arrow-line, .arrow.yes .arrow-head { background: var(--green); border-top-color: var(--green); }
+.arrow.no  .arrow-line, .arrow.no  .arrow-head { background: var(--red); border-top-color: var(--red); }
+
+/* CROSS-LANE ARROWS (horizontal connectors shown as context badges) */
+.cross-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--text-light);
+  gap: 4px;
+  margin: 6px 0;
+  width: 88%;
+}
+.cross-badge {
+  background: var(--gray-pale);
+  border: 1px solid var(--gray-border);
+  border-radius: 100px;
+  padding: 3px 10px;
+  font-size: 10px;
+  color: var(--text-mid);
+  font-weight: 500;
+}
+
+/* SECTION DIVIDERS */
+.phase-bar {
+  position: relative;
+  z-index: 2;
+  margin: 20px 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 900px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.phase-line { flex: 1; height: 1px; background: var(--gray-border); }
+.phase-tag {
+  background: var(--text);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+.phase-tag.admin { background: var(--purple); }
+.phase-tag.envio { background: #15803D; }
+.phase-tag.acceso { background: var(--blue); }
+.phase-tag.rsvp { background: var(--orange); }
+.phase-tag.panel { background: #6B21A8; }
+
+/* TOOLTIP */
+.tooltip-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(3px);
+}
+.tooltip-overlay.show { display: flex; }
+.tooltip-box {
+  background: white;
+  border-radius: 20px;
+  padding: 28px;
+  max-width: 380px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  position: relative;
+}
+.tooltip-close {
+  position: absolute;
+  top: 14px; right: 16px;
+  font-size: 20px; cursor: pointer;
+  color: var(--text-light); background: none; border: none;
+}
+.tooltip-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+.tooltip-body { font-size: 14px; color: var(--text-mid); line-height: 1.6; }
+.tooltip-tag {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 100px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* NOTES PANEL */
+.notes-panel {
+  max-width: 1200px;
+  margin: 0 auto 40px;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+.note-card {
+  background: white;
+  border-radius: 14px;
+  padding: 18px;
+  border-left: 4px solid var(--purple);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.note-card.green { border-left-color: var(--green); }
+.note-card.blue  { border-left-color: var(--blue); }
+.note-card.orange{ border-left-color: var(--orange); }
+.note-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.note-card p  { font-size: 13px; color: var(--text-mid); line-height: 1.55; }
+.note-card ul { padding-left: 16px; margin-top: 6px; }
+.note-card li { font-size: 13px; color: var(--text-mid); line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Flujo de Invitados — XV Años</h1>
+    <p>Diagrama de flujo por actor · Haz clic en cualquier nodo para ver detalles</p>
+  </div>
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:#7B2FBE"></div>Admin</div>
+    <div class="leg"><div class="leg-dot" style="background:#3B82F6"></div>Sistema</div>
+    <div class="leg"><div class="leg-dot" style="background:#22C55E"></div>WhatsApp</div>
+    <div class="leg"><div class="leg-dot" style="background:#F97316"></div>Invitado</div>
+  </div>
+</header>
+
+<div class="canvas">
+
+  <!-- PHASE 1 -->
+  <div class="phase-bar">
+    <div class="phase-line"></div>
+    <div class="phase-tag admin">① Carga de Invitados</div>
+    <div class="phase-line"></div>
+  </div>
+
+  <div class="swimlane-container">
+    <!-- ADMIN -->
+    <div class="lane">
+      <div class="lane-header admin">👤 Admin</div>
+      <div class="node start" onclick="showTip('start')">INICIO</div>
+      <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+      <div class="node admin" onclick="showTip('excel')">
+        <div class="node-num">1</div><br>
+        Prepara Excel de invitados<br>
+        <div class="node-sub">Nombre · WhatsApp · Email (opcional) · Nº de lugares</div>
+      </div>
+      <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+      <div class="node admin" onclick="showTip('upload')">
+        <div class="node-num">2</div><br>
+        Sube el Excel al panel admin
+        <div class="node-sub">Drag & drop o botón importar</div>
+      </div>
+    </div>
+
+    <!-- SISTEMA -->
+    <div class="lane">
+      <div class="lane-header sistema">⚙️ Sistema</div>
+      <div style="height:52px"></div><!-- spacer -->
+      <div style="height:32px"></div>
+      <div style="height:80px"></div>
+      <div style="height:24px"></div>
+      <div class="node sistema" onclick="showTip('parse')">
+        <div class="node-num">3</div><br>
+        Valida y procesa el Excel
+        <div class="node-sub">Detecta duplicados y errores de formato</div>
+      </div>
+      <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+      <div class="node decision sistema" onclick="showTip('valid')">
+        ¿Archivo válido?
+      </div>
+    </div>
+
+    <!-- WHATSAPP -->
+    <div class="lane">
+      <div class="lane-header whatsapp">💬 WhatsApp / Email</div>
+      <div style="height:300px"></div>
+    </div>
+
+    <!-- INVITADO -->
+    <div class="lane">
+      <div class="lane-header invitado">🎀 Invitado</div>
+      <div style="height:300px"></div>
+    </div>
+  </div>
+
+  <!-- Resultado validación -->
+  <div class="swimlane-container" style="margin-top:0;">
+    <div class="lane" style="padding-top:0;">
+      <div class="node admin" onclick="showTip('fix')">
+        <div class="node-num">✗</div><br>
+        Corrige errores indicados
+        <div class="node-sub">Panel muestra filas con error</div>
+      </div>
+      <div class="arrow no"><div class="arrow-label">NO → repite</div><div class="arrow-line" style="height:12px"></div></div>
+    </div>
+    <div class="lane">
+      <div class="arrow yes"><div class="arrow-label">SÍ</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
+      <div class="node sistema" onclick="showTip('create')">
+        <div class="node-num">4</div><br>
+        Crea registros en base de datos
+        <div class="node-sub">ID único · nº WhatsApp · email · lugares asignados · estado: pendiente</div>
+      </div>
+    </div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase-bar">
+    <div class="phase-line"></div>
+    <div class="phase-tag envio">② Envío de Invitación</div>
+    <div class="phase-line"></div>
+  </div>
+
+  <div class="swimlane-container">
+    <div class="lane">
+      <div class="node admin" onclick="showTip('send')">
+        <div class="node-num">5</div><br>
+        Pulsa "Enviar invitaciones"
+        <div class="node-sub">Puede elegir enviar a todos o a un subgrupo</div>
+      </div>
+    </div>
+    <div class="lane">
+      <div style="height:16px"></div>
+      <div class="node sistema" onclick="showTip('generate')">
+        <div class="node-num">6</div><br>
+        Genera mensaje personalizado por invitado
+        <div class="node-sub">Nombre + link de la app + código general de evento</div>
+      </div>
+    </div>
+    <div class="lane">
+      <div style="height:100px"></div>
+      <div class="node whatsapp" onclick="showTip('broadcast')">
+        <div class="node-num">7</div><br>
+        Envía vía Lista de Difusión WhatsApp
+        <div class="node-sub">Cada quien recibe su mensaje en privado · nadie ve a los demás</div>
+      </div>
+      <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+      <div class="node decision whatsapp" onclick="showTip('delivered')">
+        ¿Mensaje entregado?
+      </div>
+    </div>
+    <div class="lane"></div>
+  </div>
+
+  <!-- Fallback email -->
+  <div class="swimlane-container">
+    <div class="lane"></div>
+    <div class="lane">
+      <div class="node sistema" onclick="showTip('fallback')">
+        <div class="node-num">7b</div><br>
+        Fallback: envía por email
+        <div class="node-sub">Si el número falló Y tiene email registrado</div>
+      </div>
+      <div class="arrow no" style="width:88%"><div class="arrow-label">NO + tiene email</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
+    </div>
+    <div class="lane">
+      <div class="arrow yes"><div class="arrow-label">SÍ</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
+      <div class="node whatsapp" onclick="showTip('received')">
+        <div class="node-num">8</div><br>
+        Invitado recibe mensaje en WhatsApp (o email)
+        <div class="node-sub">Contiene: saludo personalizado + link + código del evento</div>
+      </div>
+    </div>
+    <div class="lane">
+      <div style="height:80px"></div>
+      <div class="node invitado" onclick="showTip('tap')">
+        <div class="node-num">9</div><br>
+        Invitado toca el link
+        <div class="node-sub">Abre la app/web del XV</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase-bar">
+    <div class="phase-line"></div>
+    <div class="phase-tag acceso">③ Acceso Identificado</div>
+    <div class="phase-line"></div>
+  </div>
+
+  <div class="swimlane-container">
+    <div class="lane"></div>
+    <div class="lane">
+      <div class="node sistema" onclick="showTip('loginscreen')">
+        <div class="node-num">10</div><br>
+        Muestra pantalla de acceso
+        <div class="node-sub">Campos: número WhatsApp + código del evento</div>
+      </div>
+    </div>
+    <div class="lane"></div>
+    <div class="lane">
+      <div class="node invitado" onclick="showTip('enter')">
+        <div class="node-num">11</div><br>
+        Ingresa su número de WhatsApp y el código
+        <div class="node-sub">El número es el mismo al que llegó el mensaje</div>
+      </div>
+      <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+      <div class="node invitado" onclick="showTip('submit')">
+        Pulsa "Entrar"
+      </div>
+    </div>
+  </div>
+
+  <div class="swimlane-container">
+    <div class="lane"></div>
+    <div class="lane">
+      <div class="node sistema" onclick="showTip('validate')">
+        <div class="node-num">12</div><br>
+        Valida: ¿número existe en DB + código correcto?
+      </div>
+      <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+      <div class="node decision sistema" onclick="showTip('match')">
+        ¿Coincide?
+      </div>
+    </div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+  </div>
+
+  <!-- Resultado validación acceso -->
+  <div class="swimlane-container">
+    <div class="lane"></div>
+    <div class="lane">
+      <div class="arrow no"><div class="arrow-label">NO (3 intentos → bloqueo temporal)</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
+      <div class="node sistema" onclick="showTip('blocked')">
+        Muestra mensaje de error
+        <div class="node-sub">Sugiere revisar número o contactar al admin</div>
+      </div>
+    </div>
+    <div class="lane">
+      <div class="arrow yes"><div class="arrow-label">SÍ</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
+      <div class="node sistema" onclick="showTip('session')">
+        <div class="node-num">13</div><br>
+        Crea sesión del invitado
+        <div class="node-sub">Token guardado en dispositivo · no necesita volver a entrar</div>
+      </div>
+      <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+      <div class="node invitado" onclick="showTip('welcome')">
+        <div class="node-num">14</div><br>
+        Ve su pantalla personalizada
+        <div class="node-sub">Nombre · lugares asignados · secciones de la app</div>
+      </div>
+    </div>
+    <div class="lane"></div>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="phase-bar">
+    <div class="phase-line"></div>
+    <div class="phase-tag rsvp">④ Confirmación RSVP</div>
+    <div class="phase-line"></div>
+  </div>
+
+  <div class="swimlane-container">
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane">
+      <div class="node invitado" onclick="showTip('rsvpform')">
+        <div class="node-num">15</div><br>
+        Confirma asistencia
+        <div class="node-sub">Selecciona cuántos de sus lugares va a usar + preferencias alimentarias</div>
+      </div>
+      <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+      <div class="node decision invitado" onclick="showTip('rsvpdec')">
+        ¿Asiste?
+      </div>
+    </div>
+  </div>
+
+  <div class="swimlane-container">
+    <div class="lane"></div>
+    <div class="lane">
+      <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+      <div class="node sistema" onclick="showTip('update')">
+        <div class="node-num">16</div><br>
+        Actualiza registro en DB
+        <div class="node-sub">Estado: confirmado / no asiste · lugares confirmados · dieta</div>
+      </div>
+      <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+      <div class="node whatsapp" onclick="showTip('ack')">
+        <div class="node-num">17</div><br>
+        Envía confirmación por WhatsApp/email al invitado
+        <div class="node-sub">"¡Te esperamos!" o "Gracias por avisarnos"</div>
+      </div>
+    </div>
+    <div class="lane"></div>
+    <div class="lane">
+      <div class="arrow yes"><div class="arrow-label">SÍ → confirma</div><div class="arrow-line" style="height:12px"></div></div>
+      <div style="height:16px"></div>
+      <div class="arrow no"><div class="arrow-label">NO → declina</div><div class="arrow-line" style="height:12px"></div></div>
+    </div>
+  </div>
+
+  <!-- PHASE 5 -->
+  <div class="phase-bar">
+    <div class="phase-line"></div>
+    <div class="phase-tag panel">⑤ Panel Admin – Seguimiento</div>
+    <div class="phase-line"></div>
+  </div>
+
+  <div class="swimlane-container">
+    <div class="lane">
+      <div class="node admin" onclick="showTip('dashboard')">
+        <div class="node-num">18</div><br>
+        Consulta panel de control
+        <div class="node-sub">En tiempo real</div>
+      </div>
+      <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+      <div class="node admin" onclick="showTip('reminder')">
+        <div class="node-num">19</div><br>
+        Envía recordatorios a pendientes
+        <div class="node-sub">Filtra por estado "sin respuesta" y reenvía</div>
+      </div>
+      <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+      <div class="node admin" onclick="showTip('export')">
+        <div class="node-num">20</div><br>
+        Exporta lista final
+        <div class="node-sub">Excel con confirmados, lugares totales, dietas especiales</div>
+      </div>
+      <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+      <div class="node end" onclick="showTip('fin')">FIN — Evento listo ✓</div>
+    </div>
+    <div class="lane">
+      <div class="node sistema" onclick="showTip('metrics')">
+        Métricas en tiempo real:
+        <div class="node-sub">
+          Total invitados · Confirmados · Pendientes · Declinados<br>
+          Total de lugares confirmados · Dietas especiales
+        </div>
+      </div>
+    </div>
+    <div class="lane"></div>
+    <div class="lane">
+      <div class="node invitado" onclick="showTip('explore')">
+        <div class="node-num">+</div><br>
+        Explora la app mientras espera el evento
+        <div class="node-sub">Agenda · Galería · Libro de invitados · Merch</div>
+      </div>
+      <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+      <div class="node end" onclick="showTip('fin2')">Invitado listo ✓</div>
+    </div>
+  </div>
+
+</div><!-- /canvas -->
+
+<!-- NOTES -->
+<div class="notes-panel">
+  <div class="note-card">
+    <h3>🔐 Seguridad del acceso</h3>
+    <p>El número de WhatsApp actúa como identificador único. El código general es la segunda capa. Aunque alguien comparta el código, sin el número registrado no puede entrar. 3 intentos fallidos → bloqueo de 10 min.</p>
+  </div>
+  <div class="note-card green">
+    <h3>📨 Lista de Difusión WhatsApp</h3>
+    <p>Cada invitado recibe el mensaje como si fuera directo del organizador. Nadie ve a los demás invitados. Requiere que el invitado tenga el número del admin guardado en sus contactos (se indica en el mensaje).</p>
+  </div>
+  <div class="note-card blue">
+    <h3>✉️ Fallback por correo</h3>
+    <p>Si el número WhatsApp falla (no existe, sin internet) y el invitado tiene email en el Excel, el sistema envía la invitación por correo automáticamente con el mismo link y código.</p>
+  </div>
+  <div class="note-card orange">
+    <h3>📊 Panel admin — lo que ve</h3>
+    <ul>
+      <li>Lista de todos los invitados con estado (color)</li>
+      <li>Contador: confirmados / pendientes / declinados</li>
+      <li>Total de lugares confirmados vs. asignados</li>
+      <li>Dietas especiales por nombre</li>
+      <li>Botón "Recordatorio" por invitado o masivo</li>
+      <li>Exportar a Excel en un clic</li>
+    </ul>
+  </div>
+</div>
+
+<!-- TOOLTIP OVERLAY -->
+<div class="tooltip-overlay" id="overlay" onclick="closeOverlay(event)">
+  <div class="tooltip-box">
+    <button class="tooltip-close" onclick="hideTip()">✕</button>
+    <div class="tooltip-title" id="tt-title"></div>
+    <div class="tooltip-body" id="tt-body"></div>
+    <span class="tooltip-tag" id="tt-tag"></span>
+  </div>
+</div>
+
+<script>
+const tips = {
+  start:      { title:'Inicio del proceso', body:'El administrador (quien organiza la fiesta) comienza el proceso desde el panel de administración de la app.', tag:'Admin', color:'#7B2FBE' },
+  excel:      { title:'1. Preparar el Excel', body:'El admin prepara un archivo Excel con una fila por invitado. Columnas requeridas: Nombre completo, Número WhatsApp (con código de país, ej. +521…), Nº de lugares asignados. Columna opcional: Email (para fallback).', tag:'Admin', color:'#7B2FBE' },
+  upload:     { title:'2. Subir el Excel', body:'Desde el panel admin, se arrastra o selecciona el archivo. El sistema muestra una vista previa antes de confirmar la importación.', tag:'Admin', color:'#7B2FBE' },
+  parse:      { title:'3. Validación del archivo', body:'El sistema revisa cada fila: formato de número válido, que no haya duplicados, que el campo de lugares sea un número. Si hay errores, los marca en rojo con descripción.', tag:'Sistema', color:'#3B82F6' },
+  valid:      { title:'¿Archivo válido?', body:'Si todas las filas son correctas → se crean los registros. Si hay filas con error → se muestra un reporte. El admin puede corregir y volver a subir, o ignorar las filas erróneas y continuar con las válidas.', tag:'Decisión', color:'#6B7280' },
+  fix:        { title:'Corrección de errores', body:'El panel indica exactamente qué está mal en cada fila (número inválido, campo vacío, duplicado). El admin corrige el Excel y lo vuelve a subir.', tag:'Admin', color:'#7B2FBE' },
+  create:     { title:'4. Creación de registros', body:'Por cada fila válida se crea un registro con: ID único, número WhatsApp normalizado, email (si existe), nombre, lugares asignados, estado inicial "pendiente".', tag:'Sistema', color:'#3B82F6' },
+  send:       { title:'5. Enviar invitaciones', body:'El admin elige el momento de envío. Puede enviar a todos de una vez o seleccionar un subgrupo (por ejemplo, primero familia, luego amigos). También puede reenviar solo a quienes no han abierto el link.', tag:'Admin', color:'#7B2FBE' },
+  generate:   { title:'6. Generación de mensajes', body:'El sistema crea un mensaje personalizado por cada invitado: "Hola [Nombre], estás invitado/a a los XV de Gabriella Sofía 🎉. Entra aquí: [link] y usa el código: GABY15". El link puede incluir el número pre-llenado como parámetro URL para facilitar el acceso.', tag:'Sistema', color:'#3B82F6' },
+  broadcast:  { title:'7. Lista de Difusión WhatsApp', body:'Se usa una Lista de Difusión (no un grupo). Cada mensaje llega como un chat individual del admin al invitado. Nadie ve a quién más se invitó. Nota técnica: para que funcione, el invitado debe tener guardado el número del admin en su teléfono. Por eso el mensaje inicial puede decir "Guarda este número para recibir tu invitación".', tag:'WhatsApp', color:'#15803D' },
+  delivered:  { title:'¿Mensaje entregado?', body:'WhatsApp reporta si el mensaje fue entregado (✓✓). Si hay error de entrega (número inválido, sin WhatsApp), el sistema lo marca como "fallido" y activa el fallback si hay email disponible.', tag:'Decisión', color:'#6B7280' },
+  fallback:   { title:'7b. Fallback por Email', body:'Si el mensaje de WhatsApp falló Y el invitado tiene email registrado, el sistema envía automáticamente un correo con el mismo link y código. El email tiene diseño de la invitación con botón CTA "Ver mi invitación".', tag:'Sistema', color:'#3B82F6' },
+  received:   { title:'8. Invitado recibe la invitación', body:'El mensaje llega al WhatsApp personal del invitado (o a su email como fallback). Contiene un saludo con su nombre, el link de la app y el código del evento.', tag:'WhatsApp', color:'#15803D' },
+  tap:        { title:'9. El invitado toca el link', body:'El link abre la app/web en el navegador del teléfono. Si el link incluye el número como parámetro, el campo ya aparece pre-llenado, facilitando el acceso.', tag:'Invitado', color:'#C2410C' },
+  loginscreen:{ title:'10. Pantalla de acceso', body:'La app muestra dos campos: ① Número de WhatsApp (el mismo al que llegó el mensaje) y ② Código del evento (el código general enviado en la invitación, ej. GABY15).', tag:'Sistema', color:'#3B82F6' },
+  enter:      { title:'11. El invitado ingresa sus datos', body:'Escribe su número de WhatsApp con código de país. Escribe el código del evento. Este número actúa como su identificador único en el sistema.', tag:'Invitado', color:'#C2410C' },
+  submit:     { title:'Pulsa "Entrar"', body:'El formulario envía los datos al sistema para validación. El botón muestra un spinner mientras procesa.', tag:'Invitado', color:'#C2410C' },
+  validate:   { title:'12. Validación de acceso', body:'El sistema busca el número en la base de datos Y verifica que el código del evento sea correcto. Ambas condiciones deben cumplirse. Si el número no está en la DB = no invitado. Si el código es incorrecto = error de código.', tag:'Sistema', color:'#3B82F6' },
+  match:      { title:'¿Coincide?', body:'SÍ: número en DB + código correcto → acceso concedido.\nNO: cualquiera de los dos falla → mensaje de error específico. Después de 3 intentos fallidos, el sistema bloquea ese número por 10 minutos para evitar fuerza bruta.', tag:'Decisión', color:'#6B7280' },
+  blocked:    { title:'Error de acceso', body:'El mensaje de error indica si el problema es el número ("No encontramos tu número, ¿lo ingresaste con código de país?") o el código ("Código incorrecto, revisa el mensaje que recibiste"). Se sugiere contactar al organizador si persiste.', tag:'Sistema', color:'#3B82F6' },
+  session:    { title:'13. Sesión creada', body:'Se genera un token de sesión guardado en el dispositivo (localStorage). Esto significa que el invitado no necesita volver a ingresar sus datos si regresa a la app más tarde desde el mismo dispositivo.', tag:'Sistema', color:'#3B82F6' },
+  welcome:    { title:'14. Pantalla personalizada del invitado', body:'El invitado ve: su nombre en el encabezado, cuántos lugares tiene asignados, el estado actual de su confirmación, y acceso a todas las secciones: Agenda, Galería, Libro de Invitados, Merch.', tag:'Invitado', color:'#C2410C' },
+  rsvpform:   { title:'15. Formulario de confirmación', body:'El invitado ve sus lugares asignados (ej. "Tienes 3 lugares reservados"). Puede indicar cuántos usará realmente. Puede marcar preferencias alimentarias. Puede dejar una nota.', tag:'Invitado', color:'#C2410C' },
+  rsvpdec:    { title:'¿Asiste?', body:'El invitado elige "Confirmo asistencia" o "No podré asistir". En ambos casos el sistema registra la respuesta y envía un acuse de recibo por WhatsApp/email.', tag:'Decisión', color:'#6B7280' },
+  update:     { title:'16. Actualización en DB', body:'El registro del invitado se actualiza: estado (confirmado/no asiste), número de lugares que usará, preferencias alimentarias, timestamp de confirmación.', tag:'Sistema', color:'#3B82F6' },
+  ack:        { title:'17. Acuse de recibo automático', body:'Si confirmó: "¡Perfecto [Nombre]! Tu asistencia está confirmada. Te esperamos el 12 de octubre 🎉"\nSi declinó: "Gracias por avisarnos [Nombre]. ¡Que disfrutes el día!"', tag:'WhatsApp', color:'#15803D' },
+  dashboard:  { title:'18. Panel de control admin', body:'Vista en tiempo real con: contador total de invitados, confirmados (verde), pendientes (amarillo), declinados (gris). Tabla con cada invitado y su estado. Filtros por estado. Buscador por nombre.', tag:'Admin', color:'#7B2FBE' },
+  reminder:   { title:'19. Recordatorio a pendientes', body:'El admin filtra por "sin respuesta" y con un clic envía un recordatorio personalizado por WhatsApp. El sistema espera automáticamente X días antes de sugerir reenviar.', tag:'Admin', color:'#7B2FBE' },
+  export:     { title:'20. Exportar lista final', body:'El admin descarga un Excel con: nombre, estado, lugares confirmados, preferencias alimentarias, fecha de confirmación. Útil para dar al salón/catering.', tag:'Admin', color:'#7B2FBE' },
+  metrics:    { title:'Métricas del sistema', body:'Dashboard en tiempo real: Total invitados cargados / Mensajes entregados / Invitados que accedieron / Confirmados / Declinados / Pendientes / Total lugares confirmados / Dietas especiales', tag:'Sistema', color:'#3B82F6' },
+  explore:    { title:'El invitado explora la app', body:'Después de confirmar, el invitado puede ver la Agenda del evento, ver la Galería de fotos, escribir en el Libro de Invitados, y escanear su QR de regalo (Merch). Puede volver a la app en cualquier momento desde el mismo link.', tag:'Invitado', color:'#C2410C' },
+  fin:        { title:'FIN — Evento listo', body:'El admin tiene la lista completa de confirmados, lugares totales y necesidades especiales. Todo listo para coordinar con el salón y el catering.', tag:'✓ Completado', color:'#22C55E' },
+  fin2:       { title:'Invitado listo', body:'El invitado está identificado, confirmó su asistencia y tiene toda la información del evento al alcance de su mano en la app.', tag:'✓ Completado', color:'#22C55E' },
+};
+
+function showTip(key) {
+  const t = tips[key];
+  if (!t) return;
+  document.getElementById('tt-title').textContent = t.title;
+  document.getElementById('tt-body').textContent = t.body;
+  const tag = document.getElementById('tt-tag');
+  tag.textContent = t.tag;
+  tag.style.background = t.color + '18';
+  tag.style.color = t.color;
+  document.getElementById('overlay').classList.add('show');
+}
+function hideTip() {
+  document.getElementById('overlay').classList.remove('show');
+}
+function closeOverlay(e) {
+  if (e.target.id === 'overlay') hideTip();
+}
+</script>
+</body>
+</html>

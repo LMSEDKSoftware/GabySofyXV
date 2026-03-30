@@ -1,0 +1,994 @@
+/* Invitación tipo 4 — paleta alineada con index.html / welcome_countdown (Tailwind theme) */
+
+/* Paleta XV + tornasol (rosa / celeste / morado), alineada con welcome_countdown */
+:root {
+  --primary: #ff3366;
+  --secondary: #00f5ff;
+  --vibe-purple: #8a2be2;
+  --neon-lime: #ccff00;
+  --background-light: #fafafa;
+  --inv-rose: #ff3366;
+  --inv-blush: rgba(255, 255, 255, 0.72);
+  --inv-gold: #8a2be2;
+  --inv-ink: #1a1a1a;
+  --inv-white: #ffffff;
+  --yolo-gradient: linear-gradient(180deg, #ff9eaa 0%, #e2c7ff 40%, #a2ffd6 100%);
+  --tornasol-overlay: linear-gradient(
+    125deg,
+    rgba(255, 51, 102, 0.22) 0%,
+    rgba(226, 199, 255, 0.35) 35%,
+    rgba(0, 245, 255, 0.18) 65%,
+    rgba(138, 43, 226, 0.2) 100%
+  );
+  --glass-border: rgba(255, 255, 255, 0.55);
+  --glass-shadow: 0 8px 32px rgba(138, 43, 226, 0.08), 0 4px 20px rgba(255, 51, 102, 0.06);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.inv-body {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--yolo-gradient);
+  background-attachment: fixed;
+  color: var(--inv-ink);
+  overflow-x: hidden;
+  line-height: 1.65;
+  position: relative;
+  isolation: isolate;
+}
+
+/* Brillo tornasol sobre el degradado (rosa / lavanda / menta) */
+.inv-body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 100% 80% at 10% 0%, rgba(255, 51, 102, 0.28), transparent 55%),
+    radial-gradient(ellipse 90% 70% at 95% 15%, rgba(138, 43, 226, 0.22), transparent 50%),
+    radial-gradient(ellipse 120% 60% at 50% 100%, rgba(0, 245, 255, 0.2), transparent 55%);
+  opacity: 0.85;
+  animation: inv-tornasol 22s ease-in-out infinite alternate;
+}
+
+@keyframes inv-tornasol {
+  0% {
+    opacity: 0.65;
+    filter: hue-rotate(-8deg) saturate(1.05);
+  }
+  100% {
+    opacity: 0.92;
+    filter: hue-rotate(12deg) saturate(1.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inv-body::before {
+    animation: none;
+    opacity: 0.78;
+    filter: none;
+  }
+}
+
+#app {
+  position: relative;
+  z-index: 1;
+}
+
+/* ——— Hero: parallax (foto fija + track en flujo, como inv-cd-parallax) ——— */
+.inv-hero-parallax-zone {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.inv-hero-parallax-track {
+  position: relative;
+  z-index: 15;
+  min-height: 155vh;
+  height: 155vh;
+}
+
+/* Track total = stage (1 pantalla, como el hero original) + colchón solo para scroll parallax */
+.inv-hero-parallax-flow {
+  box-sizing: border-box;
+  min-height: 155vh;
+  height: 155vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  color: #fff;
+}
+
+/* Equivale a .inv-hero__inner sobre 100vh: distancia entre “15 años” y bloque nombre/fecha intacta */
+.inv-hero-parallax-stage {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: max(0.75rem, env(safe-area-inset-top, 0px)) 1.25rem
+    calc(5.35rem + env(safe-area-inset-bottom, 0px));
+}
+
+.inv-hero-parallax-scroll-pad {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+}
+
+/* Capas fijas: la foto no se mueve con el scroll; solo object-position (JS) */
+.inv-hero-parallax-layers {
+  position: fixed;
+  inset: 0;
+  z-index: 14;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.inv-hero-parallax-layers.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.inv-hero-parallax-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.inv-hero-parallax-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 35%;
+  display: block;
+  transform: translateZ(0);
+}
+
+/* Velo neutro sobre la foto del hero */
+.inv-hero-parallax-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(45, 42, 43, 0.32) 0%,
+    rgba(45, 42, 43, 0.52) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* 15 + Años: más abajo del borde superior para no tapar el rostro */
+.inv-hero__top {
+  flex-shrink: 0;
+  padding-top: clamp(2rem, 9vh, 4.5rem);
+}
+
+/* Nombre + fecha abajo, cerca de los FAB */
+.inv-hero__bottom {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: min(22rem, 100%);
+}
+
+/* Vidrio: envuelve nombre + fecha (rectángulo, sin borde, más transparente) */
+.inv-hero__title-box {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1rem 1.35rem 1.05rem;
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: none;
+  box-shadow: none;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.inv-hero__fifteen {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.15em;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+  font-size: clamp(4.5rem, 24vw, 10rem);
+  line-height: 0.85;
+  letter-spacing: 0.02em;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+
+.inv-hero__anos {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  margin-top: 0.65rem;
+  opacity: 0.95;
+}
+
+.inv-hero__name {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(2.5rem, 9vw, 3.75rem);
+  margin-top: 0;
+  line-height: 1.1;
+  color: var(--primary);
+  text-shadow: none;
+}
+
+.inv-hero__date {
+  margin: 0;
+  margin-top: 0.55rem;
+  padding-top: 0.6rem;
+  width: 100%;
+  max-width: 100%;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #fff;
+  border-top: 1px solid rgb(138 43 226 / 0.92);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  box-sizing: border-box;
+}
+
+/* ——— Secciones ——— */
+.inv-section {
+  position: relative;
+  z-index: 22;
+  padding: 4.5rem 1.5rem;
+  max-width: 42rem;
+  margin: 0 auto;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: var(--glass-shadow);
+}
+
+.inv-section--blush {
+  background: var(--inv-blush);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--glass-border);
+  max-width: none;
+}
+
+/* Título de sección — Ceremonia (Pinyon Script); color vía utilidades Tailwind p.ej. text-vibe-purple */
+.inv-title-pinyon {
+  font-family: 'Pinyon Script', cursive;
+  font-size: clamp(2.75rem, 11vw, 4.25rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 18px rgba(138, 43, 226, 0.2);
+}
+
+.inv-kicker {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.55);
+}
+
+.inv-block-title {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.inv-text {
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: rgba(26, 26, 26, 0.78);
+  line-height: 1.75;
+}
+
+.inv-text--lead {
+  font-size: 1.05rem;
+}
+
+.inv-guest-name {
+  color: var(--inv-rose);
+}
+
+.inv-passes {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.inv-passes__n {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--inv-rose);
+  line-height: 1;
+}
+
+.inv-passes__label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.5);
+}
+
+.inv-venue-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem;
+}
+
+.inv-venue-sub {
+  font-size: 1rem;
+}
+
+.inv-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--vibe-purple) 55%, #b84fd9 100%);
+  color: #fff !important;
+  padding: 0.9rem 2.25rem;
+  border-radius: 9999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 20px rgba(138, 43, 226, 0.35), 0 2px 12px rgba(255, 51, 102, 0.25);
+  transition: transform 0.2s, box-shadow 0.25s, filter 0.25s;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.inv-btn:hover {
+  background: linear-gradient(135deg, var(--vibe-purple) 0%, var(--primary) 100%);
+  filter: brightness(1.05);
+  box-shadow: 0 6px 28px rgba(0, 245, 255, 0.2), 0 4px 20px rgba(138, 43, 226, 0.4);
+  color: #fff !important;
+}
+
+.inv-btn--ghost {
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--vibe-purple) !important;
+  border: 1px solid rgba(138, 43, 226, 0.35);
+  box-shadow: 0 2px 12px rgba(138, 43, 226, 0.12);
+}
+
+.inv-btn--ghost:hover {
+  background: linear-gradient(135deg, var(--primary), var(--vibe-purple));
+  color: #fff !important;
+  border-color: transparent;
+}
+
+.inv-btn--wide {
+  text-align: center;
+}
+
+.inv-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ——— Zona 2: scroll largo + imagen fija en viewport + caja que sube ——— */
+.inv-cd-parallax-zone {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Pista: altura = scroll del parallax; contenido en flujo (1:1 con el scroll del documento) */
+.inv-cd-parallax-track {
+  position: relative;
+  z-index: 19;
+  min-height: 175vh;
+  height: 175vh;
+}
+
+/* Padding tipo DevTools: arriba muy ajustado; abajo clamp(…, 2.5vh, 10.5rem) */
+.inv-cd-parallax-flow {
+  box-sizing: border-box;
+  min-height: 175vh;
+  height: 100%;
+  padding: clamp(1.875rem, 3.35vh, 3.375rem) 1.25rem clamp(2.25rem, 2.5vh, 10.5rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.inv-cd-parallax-card-wrap {
+  width: 100%;
+  max-width: 22rem;
+  flex-shrink: 0;
+}
+
+/* Capas fijas al viewport: la foto NO se mueve; solo cambia el encuadre (object-position) */
+.inv-cd-parallax-layers {
+  position: fixed;
+  inset: 0;
+  z-index: 18;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  /* Sin transición: al activarse, opacidad 1 al instante (evita sensación de “bajar” el brillo) */
+}
+
+.inv-cd-parallax-layers.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.inv-cd-parallax-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.inv-cd-parallax-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 100%;
+  display: block;
+  transform: translateZ(0);
+}
+
+.inv-cd-parallax-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(20, 18, 24, 0.18) 0%,
+    rgba(20, 18, 24, 0.38) 55%,
+    rgba(20, 18, 24, 0.5) 100%
+  );
+  pointer-events: none;
+}
+
+.inv-cd-parallax-card-inner {
+  width: 100%;
+}
+
+.inv-countdown-card {
+  width: 100%;
+  max-width: 22rem;
+  padding: 1.35rem 1.25rem 1.5rem;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--vibe-purple) 55%, #b84fd9 100%);
+  box-shadow:
+    0 12px 36px rgba(138, 43, 226, 0.38),
+    0 4px 20px rgba(255, 51, 102, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+}
+
+/* Sobre foto: mismo degradado en vidrio (primary / vibe-purple / tornasol) */
+.inv-cd-parallax-card-inner.inv-countdown-card {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 51, 102, 0.78) 0%,
+    rgba(138, 43, 226, 0.74) 52%,
+    rgba(184, 79, 217, 0.78) 100%
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  box-shadow:
+    0 16px 44px rgba(138, 43, 226, 0.35),
+    0 6px 22px rgba(255, 51, 102, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Zona 3: por encima de la capa fija (28 > 18) para tapar la foto al hacer scroll */
+.inv-cd-parallax-zone ~ .inv-section,
+.inv-cd-parallax-zone ~ footer.inv-footer {
+  z-index: 28;
+}
+
+/* Tarjeta que sube y tapa la foto (como el bloque verde de la referencia), adaptado a la paleta de la invitación */
+.inv-section--after-parallax {
+  border-radius: 26px 26px 0 0;
+  /* ~25 % más solapamiento que -20px → menos hueco respecto a la foto / track */
+  margin-top: -26px;
+  padding-top: calc(3.375rem + 15px);
+  background: rgba(252, 250, 255, 0.78);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: var(--glass-shadow);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.inv-countdown-card__title {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+  text-align: center;
+  margin: 0 0 1.1rem;
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.25),
+    0 0 14px rgba(0, 245, 255, 0.2);
+}
+
+/* Countdown (default, secciones normales) */
+.inv-countdown {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.25rem 2rem;
+}
+
+.inv-countdown--boxed {
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  gap: 0.35rem 0.5rem;
+  width: 100%;
+}
+
+.inv-countdown__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 4.5rem;
+}
+
+.inv-countdown--boxed .inv-countdown__item {
+  flex: 1;
+  min-width: 0;
+}
+
+.inv-countdown__val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.25rem;
+  font-weight: 600;
+  color: var(--vibe-purple);
+  line-height: 1.2;
+}
+
+.inv-countdown__item:last-child .inv-countdown__val {
+  color: var(--primary);
+  text-shadow: 0 0 12px rgba(255, 51, 102, 0.35);
+}
+
+.inv-countdown__lbl {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(26, 26, 26, 0.45);
+  margin-top: 0.35rem;
+}
+
+/* Caja dorada: números y etiquetas en blanco / sans */
+.inv-countdown-card .inv-countdown__val {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: clamp(1.65rem, 7vw, 2.1rem);
+  font-weight: 800;
+  color: #fff !important;
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.22),
+    0 0 12px rgba(255, 255, 255, 0.12);
+}
+
+.inv-countdown-card .inv-countdown__item:last-child .inv-countdown__val {
+  color: #fff !important;
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.22),
+    0 0 14px rgba(0, 245, 255, 0.28);
+}
+
+.inv-countdown-card .inv-countdown__lbl {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.92);
+  margin-top: 0.4rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.inv-names {
+  font-weight: 600;
+}
+
+.inv-ampersand {
+  opacity: 0.85;
+}
+
+.inv-card {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 4px 24px rgba(138, 43, 226, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  padding: 1.75rem 1.5rem;
+  border-radius: 24px;
+  text-align: center;
+}
+
+/* Galería: carrusel horizontal, una foto, scroll-snap + swipe */
+.inv-gallery-slider {
+  max-width: min(22rem, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.inv-gallery-slider__viewport {
+  display: flex;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  border-radius: 22px;
+  outline: none;
+  cursor: grab;
+  touch-action: pan-x;
+  user-select: none;
+  -webkit-user-select: none;
+  overscroll-behavior-x: contain;
+  box-shadow:
+    0 10px 36px rgba(138, 43, 226, 0.15),
+    0 4px 16px rgba(255, 51, 102, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.inv-gallery-slider__viewport.is-dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+}
+
+.inv-gallery-slider__viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.inv-gallery-slider__viewport:focus-visible {
+  box-shadow:
+    0 0 0 3px rgba(138, 43, 226, 0.35),
+    0 10px 36px rgba(138, 43, 226, 0.15);
+}
+
+.inv-gallery-slider__slide {
+  flex: 0 0 100%;
+  min-width: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  aspect-ratio: 3 / 4;
+  cursor: pointer;
+  position: relative;
+}
+
+.inv-gallery-slider__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 22px;
+  pointer-events: none;
+}
+
+.inv-gallery-slider__dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 1rem;
+}
+
+.inv-gallery-slider__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(26, 26, 26, 0.22);
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.inv-gallery-slider__dot:hover {
+  background: rgba(138, 43, 226, 0.45);
+  transform: scale(1.15);
+}
+
+.inv-gallery-slider__dot.is-active {
+  background: var(--vibe-purple);
+  transform: scale(1.35);
+  box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.28);
+}
+
+.inv-gallery-slider__dot:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.inv-hotel-card {
+  text-align: left;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.inv-hotel-card:last-child {
+  border-bottom: none;
+}
+
+.inv-link {
+  color: var(--inv-rose);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.inv-link:hover {
+  text-decoration: underline;
+}
+
+/* RSVP */
+.inv-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.45);
+  margin-bottom: 0.5rem;
+}
+
+.inv-input {
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+  padding: 0.65rem 0;
+  font-size: 0.9rem;
+  font-family: inherit;
+  background: transparent;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.inv-input:focus {
+  border-color: var(--inv-rose);
+}
+
+.inv-input--area {
+  resize: vertical;
+  min-height: 4rem;
+}
+
+.inv-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.inv-radio input {
+  accent-color: var(--inv-rose);
+}
+
+.inv-footer {
+  padding: 4rem 1.5rem 5rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+/* Lightbox detalle (título Galería + imagen grande) */
+.inv-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 4000;
+  display: flex;
+  flex-direction: column;
+  background: rgba(8, 6, 12, 0.94);
+  padding: 0;
+}
+
+.inv-lightbox.hidden {
+  display: none;
+}
+
+.inv-lightbox__bar {
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 3.25rem 0.65rem;
+}
+
+.inv-lightbox__brand {
+  font-family: 'Pinyon Script', cursive;
+  font-size: clamp(1.85rem, 8vw, 2.6rem);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 2px 24px rgba(138, 43, 226, 0.35);
+  pointer-events: none;
+}
+
+.inv-lightbox__close {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2.75rem;
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.65rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.95;
+}
+
+.inv-lightbox__close:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.inv-lightbox__body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.35rem 0.5rem 1.25rem;
+  min-height: 0;
+}
+
+.inv-lightbox__frame {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  max-height: calc(100vh - 5.5rem);
+}
+
+.inv-lightbox__frame img {
+  max-width: 100%;
+  max-height: calc(85vh - 4.5rem);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+}
+
+.inv-lightbox__nav {
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+}
+
+.inv-lightbox__nav:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+@media (max-width: 380px) {
+  .inv-lightbox__nav {
+    width: 1.85rem;
+    height: 1.85rem;
+    font-size: 1.25rem;
+  }
+}
+
+/* Flotantes */
+.floating-music {
+  position: fixed;
+  bottom: 1.75rem;
+  left: 1.75rem;
+  width: 3.125rem;
+  height: 3.125rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 0 2px rgba(255, 51, 102, 0.45),
+    0 0 0 4px rgba(0, 245, 255, 0.2),
+    0 6px 22px rgba(138, 43, 226, 0.28);
+  cursor: pointer;
+  z-index: 3000;
+  border: none;
+  color: var(--vibe-purple);
+}
+
+.floating-music.is-playing {
+  animation: spin-slow 8s linear infinite;
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.floating-whatsapp {
+  position: fixed;
+  bottom: 1.75rem;
+  right: 1.75rem;
+  width: 3.125rem;
+  height: 3.125rem;
+  background: #25d366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.45);
+  z-index: 3000;
+}
+
+/* Reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Tras “¡Sólo faltan!”: sin fade-in inicial — siempre a opacidad plena */
+.inv-cd-parallax-zone ~ .inv-section.reveal,
+.inv-cd-parallax-zone ~ footer.reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}

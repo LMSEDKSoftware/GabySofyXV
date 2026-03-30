@@ -1,0 +1,36 @@
+Raíz del servidor (dominio o subdominio)
+========================================
+
+Esta carpeta está pensada para ser la RAÍZ del sitio que subes al hosting.
+
+Qué subir
+---------
+Opción A — Raíz del dominio (recomendado):
+  Sube el CONTENIDO de esta carpeta dentro de public_html, www o htdocs:
+    index.html
+    .htaccess   (Apache; en Windows/IIS usa web.config)
+    web.config  (IIS)
+    css/
+    js/
+    assets/
+
+  No hace falta crear una carpeta extra "invitacion_tipo_4" en el servidor
+  a menos que quieras la URL tipo tudominio.com/invitacion_tipo_4/
+
+Opción B — Subcarpeta:
+  Si subes toda la carpeta invitacion_tipo_4 tal cual, la URL será
+  tudominio.com/invitacion_tipo_4/ y también funcionará (rutas relativas).
+
+Qué incluye
+-----------
+  assets/img/     → fotos, galería, parallax
+  assets/music/   → opcional: bg.mp3 para fondo
+
+Requisitos
+----------
+  - Hosting con archivos estáticos (HTML/CSS/JS).
+  - Internet en el visitante: Google Fonts, Material Symbols, Tailwind CDN.
+
+Las rutas son relativas al index.html (css/, js/, assets/). Sube siempre
+los tres junto a index.html. El JS arranca aunque cargue tarde (no depende
+solo de DOMContentLoaded antes del script).
