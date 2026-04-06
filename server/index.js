@@ -108,6 +108,9 @@ const GUESTS_TABLE = process.env.SUPABASE_GUESTS_TABLE || 'guests';
 const RSVP_TABLE = process.env.SUPABASE_RSVP_TABLE || 'rsvps';
 const INVITATIONS_TABLE = process.env.SUPABASE_INVITATIONS_TABLE || 'invitation_sends';
 const FRONTEND_BASE_URL = (process.env.FRONTEND_BASE_URL || 'http://127.0.0.1:5500').replace(/\/$/, '');
+/** URL pública de la invitación (https + dominio real). Si no se define, se usa FRONTEND_BASE_URL. WhatsApp Web no enlaza 127.0.0.1 ni localhost. */
+const INVITE_PUBLIC_BASE_URL = (process.env.INVITE_PUBLIC_BASE_URL || '').trim().replace(/\/$/, '');
+const INVITE_PAGE_BASE_URL = (INVITE_PUBLIC_BASE_URL || FRONTEND_BASE_URL).replace(/\/$/, '');
 const TOKEN_TTL_HOURS = Number(process.env.ACCESS_LINK_TTL_HOURS || 24 * 365);
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
@@ -138,7 +141,7 @@ async function issueGuestToken(guestId) {
   const token = makeToken();
   const tokenHash = hashToken(token);
   const exp = new Date(Date.now() + TOKEN_TTL_HOURS * 3600 * 1000).toISOString();
-  const url = `${FRONTEND_BASE_URL}/?t=${encodeURIComponent(token)}`;
+  const url = `${INVITE_PAGE_BASE_URL}/?t=${encodeURIComponent(token)}`;
   const { error } = await supabase
     .from(GUESTS_TABLE)
     .update({ personal_token_hash: tokenHash, token_expires_at: exp, personal_invite_url: url })
@@ -155,7 +158,7 @@ async function ensureGuestToken(guestId, currentHash, expiresAt) {
   const token = makeToken();
   const tokenHash = hashToken(token);
   const exp = new Date(now + TOKEN_TTL_HOURS * 3600 * 1000).toISOString();
-  const url = `${FRONTEND_BASE_URL}/?t=${encodeURIComponent(token)}`;
+  const url = `${INVITE_PAGE_BASE_URL}/?t=${encodeURIComponent(token)}`;
   const { error } = await supabase
     .from(GUESTS_TABLE)
     .update({ personal_token_hash: tokenHash, token_expires_at: exp, personal_invite_url: url })
@@ -165,10 +168,13 @@ async function ensureGuestToken(guestId, currentHash, expiresAt) {
 }
 
 function buildFinalInvitationMessage(fullName, approvedSeats, link) {
+  const clean = String(link || '').trim();
+  /** URL en línea aparte: WhatsApp Web enlaza mejor que “texto: url” en la misma línea; evita pegar espacios raros al copiar. */
   return (
     `Hola ${fullName}, estás invitado(a) a los XV de Gabriella Sofía.\n` +
-    `Tus lugares aprobados: ${approvedSeats}.\n` +
-    `Confirma tu asistencia aquí: ${link}\n` +
+    `Tus lugares aprobados: ${approvedSeats}.\n\n` +
+    `Confirma tu asistencia en el siguiente enlace:\n` +
+    `${clean}\n\n` +
     `Te esperamos con mucho cariño.`
   );
 }
@@ -282,6 +288,7 @@ app.get('/api/admin/config', adminAuth, (_req, res) => {
   res.json({
     ok: true,
     frontendBaseUrl: FRONTEND_BASE_URL,
+    invitePageBaseUrl: INVITE_PAGE_BASE_URL,
     guestsTable: GUESTS_TABLE,
     linkTtlHours: TOKEN_TTL_HOURS,
     twilioReady,
@@ -320,16 +327,13 @@ app.post('/api/admin/import-guests', adminAuth, upload.single('file'), async (re
   if (!guests.length) return res.status(400).json({ error: 'No hay invitados válidos (nombre + teléfono)' });
 
   const phones = [...new Set(guests.map((g) => g.phone_e164))];
-  const { data: existingRows } = await supabase
-    .from(GUESTS_TABLE)
-    .select('phone_e164, invitation_message, personal_invite_url, personal_token_hash, token_expires_at')
-    .in('phone_e164', phones);
+  const { data: existingRows } = await supabase.from(GUESTS_TABLE).select('*').in('phone_e164', phones);
   const prevByPhone = new Map((existingRows || []).map((r) => [r.phone_e164, r]));
 
   const payload = guests.map((g) => {
     const prev = prevByPhone.get(g.phone_e164);
     if (prev) {
-      return {
+      const row = {
         ...g,
         attendance_status: 'pending',
         confirmed_seats: 0,
@@ -338,6 +342,10 @@ app.post('/api/admin/import-guests', adminAuth, upload.single('file'), async (re
         personal_token_hash: prev.personal_token_hash ?? null,
         token_expires_at: prev.token_expires_at ?? null
       };
+      if (Object.prototype.hasOwnProperty.call(prev, 'organizer_whatsapp_sent_at')) {
+        row.organizer_whatsapp_sent_at = prev.organizer_whatsapp_sent_at;
+      }
+      return row;
     }
     return {
       ...g,
@@ -383,11 +391,35 @@ app.post('/api/admin/import-guests', adminAuth, upload.single('file'), async (re
 });
 
 app.get('/api/admin/guests', adminAuth, async (_req, res) => {
-  const { data, error } = await supabase.from(GUESTS_TABLE)
-    .select('id, full_name, phone_e164, email, approved_seats, confirmed_seats, attendance_status, rsvp_note, invitation_message, personal_invite_url, token_expires_at, last_sent_at, last_delivery_status, created_at')
-    .order('created_at', { ascending: false });
+  /** select('*') evita error 500 si aún no ejecutaste la migración 004 (columna organizer_whatsapp_sent_at). */
+  const { data, error } = await supabase.from(GUESTS_TABLE).select('*').order('created_at', { ascending: false });
   if (error) return res.status(500).json({ error: error.message });
   res.json({ guests: data || [], updatedAt: new Date().toISOString() });
+});
+
+app.patch('/api/admin/guests/:id/whatsapp-sent', adminAuth, async (req, res) => {
+  const id = String(req.params.id || '').trim();
+  const sent = Boolean(req.body?.sent);
+  if (!id) return res.status(400).json({ error: 'id requerido' });
+  const organizer_whatsapp_sent_at = sent ? new Date().toISOString() : null;
+  const { data, error } = await supabase
+    .from(GUESTS_TABLE)
+    .update({ organizer_whatsapp_sent_at })
+    .eq('id', id)
+    .select('id, organizer_whatsapp_sent_at')
+    .maybeSingle();
+  if (error) {
+    const msg = String(error.message || '');
+    if (/organizer_whatsapp_sent_at|column.*does not exist|schema cache/i.test(msg)) {
+      return res.status(503).json({
+        error:
+          'Falta la columna en Supabase. Abre el SQL Editor y ejecuta el archivo server/db/004_organizer_whatsapp_sent_at.sql del repositorio.'
+      });
+    }
+    return res.status(500).json({ error: error.message });
+  }
+  if (!data) return res.status(404).json({ error: 'Invitado no encontrado' });
+  res.json({ ok: true, guestId: data.id, organizer_whatsapp_sent_at: data.organizer_whatsapp_sent_at });
 });
 
 app.post('/api/admin/messages', adminAuth, async (req, res) => {
@@ -415,7 +447,7 @@ app.post('/api/admin/messages', adminAuth, async (req, res) => {
       }
     }
 
-    const link = `${FRONTEND_BASE_URL}/?t=${encodeURIComponent(token)}`;
+    const link = `${INVITE_PAGE_BASE_URL}/?t=${encodeURIComponent(token)}`;
     const message = buildFinalInvitationMessage(g.full_name, g.approved_seats, link);
     const { error: saveErr } = await supabase
       .from(GUESTS_TABLE)
@@ -516,7 +548,7 @@ app.post('/api/admin/send-invitations', adminAuth, async (req, res) => {
     const issued = await issueGuestToken(g.id);
     const token = issued.token;
 
-    const link = `${FRONTEND_BASE_URL}/?t=${encodeURIComponent(token)}`;
+    const link = `${INVITE_PAGE_BASE_URL}/?t=${encodeURIComponent(token)}`;
     const body = buildFinalInvitationMessage(g.full_name, g.approved_seats, link);
 
     if (dryRun) {
@@ -582,6 +614,8 @@ if (process.env.VERCEL !== '1') {
     console.log(`Invitación: ${base}/`);
     console.log(`Admin:      ${base}/admin.html`);
     console.log(`API health: ${base}/api/health`);
-    console.log(`Usa FRONTEND_BASE_URL=${base} en .env para links de WhatsApp.`);
+    console.log(
+      `Enlaces de invitación (copiar/pegar WhatsApp): define INVITE_PUBLIC_BASE_URL=https://tu-dominio.com o FRONTEND_BASE_URL con URL pública https (no uses 127.0.0.1).`
+    );
   });
 }
