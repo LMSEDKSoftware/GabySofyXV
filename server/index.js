@@ -114,13 +114,13 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
 const ADMIN_AUTH_SECRET = process.env.ADMIN_AUTH_SECRET || '';
 const ADMIN_SESSION_TTL_HOURS = Number(process.env.ADMIN_SESSION_TTL_HOURS || 12);
 
-if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-  throw new Error('Faltan SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY');
-}
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-  auth: { autoRefreshToken: false, persistSession: false }
-});
+/** En Vercel/cPanel las variables van en el panel; sin ellas el proceso no debe morir al importar. */
+const supabase =
+  SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY
+    ? createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+        auth: { autoRefreshToken: false, persistSession: false }
+      })
+    : null;
 
 function makeToken() {
   return randomBytes(24).toString('base64url');
@@ -210,7 +210,39 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '128kb' }));
 
-app.get('/api/health', (_req, res) => res.json({ ok: true, db: 'supabase' }));
+function routeSkipsSupabaseCheck(req) {
+  const p = req.path || '';
+  if (p === '/api/health') return true;
+  if (req.method === 'POST' && p === '/api/admin/login') return true;
+  if (
+    req.method === 'GET' &&
+    (p === '/api/admin/me' || p === '/api/admin/config' || p === '/api/admin/template.xlsx')
+  ) {
+    return true;
+  }
+  return false;
+}
+
+app.use((req, res, next) => {
+  const p = req.path || '';
+  if (!p.startsWith('/api')) return next();
+  if (routeSkipsSupabaseCheck(req)) return next();
+  if (!supabase) {
+    return res.status(503).json({
+      error:
+        'Falta Supabase: agrega SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY en Environment Variables (Vercel → Settings → Environment Variables), guarda y redeploy.'
+    });
+  }
+  next();
+});
+
+app.get('/api/health', (_req, res) =>
+  res.json({
+    ok: true,
+    supabaseConfigured: Boolean(supabase),
+    db: supabase ? 'supabase' : 'missing_env'
+  })
+);
 
 app.post('/api/admin/login', async (req, res) => {
   const { username, password } = req.body || {};
