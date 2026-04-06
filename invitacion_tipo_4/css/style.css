@@ -199,9 +199,12 @@
   will-change: transform;
 }
 
+/* Fuera del vidrio del nombre: el panel .inv-hero__title-box ya no envuelve el logo */
 .inv-sofia-logo--hero {
   width: clamp(4rem, 21vw, 6.75rem);
-  margin: 0 auto 0.65rem;
+  margin: 0 auto 0.45rem;
+  /* Ligero ajuste Y: separa un poco más del borde superior del cuadro */
+  transform: translateY(-4px);
 }
 
 .inv-sofia-logo__parallax {
