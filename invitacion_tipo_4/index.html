@@ -6,6 +6,8 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <meta name="xv-api-base" content="/api">
+    <meta name="xv-api-remote" content="https://gaby-sofy-xv.vercel.app/api">
     <title>Invitación — Gabriella Sofía</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -65,6 +67,10 @@
     </a>
 
     <main id="app">
+        <div class="hidden" aria-hidden="true">
+            <span id="guest_name">Nombre del invitado</span>
+            <span id="guest_passes">2</span>
+        </div>
         <!-- HERO: misma lógica que countdown — foto fija en viewport, contenido sube con el scroll -->
         <section class="inv-hero-parallax-zone" id="inv_hero_zone" aria-label="Portada">
             <div class="inv-hero-parallax-layers" id="inv_hero_layers">
@@ -125,12 +131,6 @@
             <p class="inv-text inv-text--lead max-w-md mx-auto">
                 Dios ha sido mi guía en este camino, y quiero compartir contigo la alegría de cumplir mis XV años. Cada momento ha sido un regalo; hoy celebro mi vida con amor y gratitud.
             </p>
-            <h2 class="inv-kicker mt-14">Invitación válida para</h2>
-            <p id="guest_name" class="inv-guest-name font-serif italic text-3xl md:text-4xl text-inv-rose mt-4">Nombre del invitado</p>
-            <div class="inv-passes mt-8">
-                <span id="guest_passes" class="inv-passes__n">2</span>
-                <span class="inv-passes__label">pases disponibles</span>
-            </div>
             <p class="inv-text mt-10 max-w-sm mx-auto">Me hará muy feliz que me acompañes en este día tan especial.</p>
         </section>
 
@@ -229,120 +229,6 @@
                 Av. Ignacio Morones Prieto 2808, Monterrey, Nuevo León.
             </p>
             <a href="https://maps.app.goo.gl/xwHmCSVZ1tNnt1GE8" target="_blank" rel="noopener noreferrer" class="inv-btn mt-8">Abrir mapa</a>
-        </section>
-
-        <section class="inv-section inv-section--agenda reveal" id="agenda" aria-labelledby="agenda-heading">
-            <h2 id="agenda-heading" class="inv-title-pinyon text-vibe-purple">Agenda</h2>
-            <p class="inv-agenda__date">Viernes, 8 de mayo de 2026</p>
-            <ol class="inv-agenda__timeline">
-                <li class="inv-agenda__row">
-                    <div class="inv-agenda__track">
-                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">church</span></span>
-                    </div>
-                    <div class="inv-agenda__main">
-                        <h3 class="inv-agenda__title">Ceremonia</h3>
-                    </div>
-                    <time class="inv-agenda__time" datetime="2026-05-08T17:30">5:30 pm</time>
-                </li>
-                <li class="inv-agenda__row">
-                    <div class="inv-agenda__track">
-                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">waving_hand</span></span>
-                    </div>
-                    <div class="inv-agenda__main">
-                        <h3 class="inv-agenda__title">Apertura / Bienvenida</h3>
-                    </div>
-                    <time class="inv-agenda__time" datetime="2026-05-08T19:30">7:30 pm</time>
-                </li>
-                <li class="inv-agenda__row">
-                    <div class="inv-agenda__track">
-                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">restaurant_menu</span></span>
-                    </div>
-                    <div class="inv-agenda__main">
-                        <h3 class="inv-agenda__title">Inicio servicio</h3>
-                    </div>
-                    <time class="inv-agenda__time" datetime="2026-05-08T20:00">8:00 pm</time>
-                </li>
-                <li class="inv-agenda__row">
-                    <div class="inv-agenda__track">
-                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">auto_awesome</span></span>
-                    </div>
-                    <div class="inv-agenda__main">
-                        <h3 class="inv-agenda__title">Presentación XV</h3>
-                        <ul class="inv-agenda__sub">
-                            <li>Vals papá</li>
-                            <li>Vals damas y chambelanes</li>
-                            <li>Vals XV Rosas</li>
-                        </ul>
-                    </div>
-                    <time class="inv-agenda__time" datetime="2026-05-08T20:10">8:10 pm</time>
-                </li>
-                <li class="inv-agenda__row">
-                    <div class="inv-agenda__track">
-                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">restaurant</span></span>
-                    </div>
-                    <div class="inv-agenda__main">
-                        <h3 class="inv-agenda__title">Servicio cena <span class="font-normal text-black/55">(fotoclip)</span></h3>
-                    </div>
-                    <time class="inv-agenda__time" datetime="2026-05-08T20:45">8:45 pm</time>
-                </li>
-                <li class="inv-agenda__row">
-                    <div class="inv-agenda__track">
-                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">mic</span></span>
-                    </div>
-                    <div class="inv-agenda__main">
-                        <h3 class="inv-agenda__title">Presentación Sorpresa</h3>
-                    </div>
-                    <time class="inv-agenda__time" datetime="2026-05-08T21:00">9:00 pm</time>
-                </li>
-                <li class="inv-agenda__row">
-                    <div class="inv-agenda__track">
-                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">celebration</span></span>
-                    </div>
-                    <div class="inv-agenda__main">
-                        <h3 class="inv-agenda__title">Baile Mix <span class="font-normal text-black/55">(XV + Damas + chambelanes)</span></h3>
-                        <ul class="inv-agenda__sub">
-                            <li>Regalo sorpresa</li>
-                        </ul>
-                    </div>
-                    <time class="inv-agenda__time" datetime="2026-05-08T21:50">9:50 pm</time>
-                </li>
-                <li class="inv-agenda__row">
-                    <div class="inv-agenda__track">
-                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">graphic_eq</span></span>
-                    </div>
-                    <div class="inv-agenda__main">
-                        <h3 class="inv-agenda__title">DJ Brown</h3>
-                    </div>
-                    <time class="inv-agenda__time" datetime="2026-05-08T22:00">10:00 pm</time>
-                </li>
-                <li class="inv-agenda__row">
-                    <div class="inv-agenda__track">
-                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">nightlife</span></span>
-                    </div>
-                    <div class="inv-agenda__main">
-                        <h3 class="inv-agenda__title">Arranca baile</h3>
-                    </div>
-                    <time class="inv-agenda__time" datetime="2026-05-08T23:00">11:00 pm</time>
-                </li>
-                <li class="inv-agenda__row">
-                    <div class="inv-agenda__track">
-                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">cake</span></span>
-                    </div>
-                    <div class="inv-agenda__main">
-                        <h3 class="inv-agenda__title">Pastel</h3>
-                    </div>
-                    <time class="inv-agenda__time" datetime="2026-05-08T23:30">11:30 pm</time>
-                </li>
-                <li class="inv-agenda__row">
-                    <div class="inv-agenda__track">
-                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">event_available</span></span>
-                    </div>
-                    <div class="inv-agenda__main">
-                        <h3 class="inv-agenda__title">Finaliza servicio</h3>
-                    </div>
-                    <time class="inv-agenda__time" datetime="2026-05-09T01:00">1:00 am</time>
-                </li>
-            </ol>
         </section>
 
         <section class="inv-section reveal">
@@ -448,37 +334,40 @@
 
         <section class="inv-section reveal" id="confirmacion">
             <h2 class="inv-title-pinyon text-vibe-purple">Confirmación</h2>
-            <p class="inv-text mt-6 max-w-md mx-auto text-center">Es muy importante para nosotros contar con tu confirmación lo antes posible.</p>
-            <h3 class="font-semibold mt-12 text-lg">¿Asistirás a mi fiesta?</h3>
+            <p class="inv-text mt-6 max-w-md mx-auto text-center">
+                Es muy importante para nosotros contar con tu confirmación lo antes posible.
+            </p>
+
+            <div class="inv-rsvp-invite-card max-w-sm mx-auto mt-10 rounded-2xl px-6 py-8 text-center">
+                <p class="inv-kicker">Invitación válida para</p>
+                <p id="guest_name_rsvp" class="inv-guest-name font-serif italic text-3xl md:text-4xl mt-3">Nombre del invitado</p>
+                <p class="inv-passes__label mt-10">Personas confirmadas</p>
+                <div id="rsvp_personas_fixed" class="inv-passes__n mt-2" aria-live="polite">2</div>
+            </div>
+
+            <h3 class="font-semibold mt-12 text-lg text-center">¿Asistirás a mi fiesta?</h3>
             <div class="flex gap-4 justify-center mt-6 flex-wrap">
                 <label class="inv-radio">
                     <input type="radio" name="asistencia" value="si" checked>
-                    <span>Asistiré</span>
+                    <span>Sí</span>
                 </label>
                 <label class="inv-radio">
                     <input type="radio" name="asistencia" value="no">
                     <span>No asistiré</span>
                 </label>
             </div>
+
             <div id="rsvp_extra" class="mt-10 max-w-sm mx-auto text-left space-y-6">
-                <div>
-                    <label class="inv-label" for="rsvp_personas">Personas confirmadas</label>
-                    <select id="rsvp_personas" class="inv-input">
-                        <option value="1">1</option>
-                        <option value="2" selected>2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5+</option>
-                    </select>
-                </div>
                 <div>
                     <label class="inv-label" for="rsvp_msg">¡Déjame un mensaje!</label>
                     <textarea id="rsvp_msg" class="inv-input inv-input--area" rows="3" placeholder="Unas palabras para la festejada…"></textarea>
                 </div>
                 <button type="button" id="rsvp_submit_v4" class="inv-btn inv-btn--wide w-full">Enviar</button>
             </div>
-            <p class="inv-text mt-10 text-sm">
-                WhatsApp: <a href="https://wa.me/528131361132" class="inv-link">81 3136 1132</a>
+            <p class="inv-text mt-8 text-sm text-center text-black/45">
+                ¿Dudas? Escríbenos por
+                <a href="https://wa.me/528131361132" class="inv-link">WhatsApp</a>
+                (el botón Enviar guarda tu respuesta en el sistema, no abre WhatsApp).
             </p>
         </section>
 

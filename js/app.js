@@ -1,6 +1,8 @@
 /**
- * Invitación principal (raíz) — countdown, galería, RSVP con API opcional + WhatsApp de respaldo.
- * Configura <meta name="xv-api-base" content="https://tu-dominio.com/api"> para Twilio/Resend vía backend.
+ * Invitación principal (raíz) — countdown, galería, RSVP vía API (Supabase); sin redirección a WhatsApp al enviar.
+ * Configura <meta name="xv-api-base" content="/api"> (mismo origen en Vercel) o URL absoluta del API.
+ * Si la invitación está en hosting estático (ej. cPanel) y el API en Vercel, añade
+ * <meta name="xv-api-remote" content="https://tu-proyecto.vercel.app/api">.
  */
 
 const EVENT_DATE = new Date('2026-05-08T17:30:00');
@@ -26,13 +28,33 @@ const OFFICIAL_PHOTOS = [
 
 const GALLERY_BASE = 'assets/img/oficial_gallery/final/';
 
-const WA_NUMBER = '528131361132';
-
 function getXVApiBase() {
+  if (typeof window === 'undefined' || typeof location === 'undefined') return '';
   const m = document.querySelector('meta[name="xv-api-base"]');
-  const raw = m && m.content ? m.content.trim() : '';
-  if (!raw) return '';
-  return raw.replace(/\/$/, '');
+  const raw = m && m.getAttribute('content') != null ? String(m.getAttribute('content')).trim() : '';
+  if (raw === '') return '';
+
+  const rm = document.querySelector('meta[name="xv-api-remote"]');
+  const remote = rm && rm.getAttribute('content') != null ? String(rm.getAttribute('content')).trim().replace(/\/$/, '') : '';
+
+  const h = location.hostname || '';
+  const isLocal = h === 'localhost' || h === '127.0.0.1';
+  const onVercel = /\.vercel\.app$/i.test(h);
+
+  if (/^https?:\/\//i.test(raw)) {
+    return raw.replace(/\/$/, '');
+  }
+
+  const pathPart = raw.startsWith('/') ? raw : `/${raw}`;
+  if (isLocal || onVercel) {
+    return `${location.origin}${pathPart}`.replace(/\/$/, '');
+  }
+
+  if (remote) {
+    return /^https?:\/\//i.test(remote) ? remote : `${location.origin}${remote.startsWith('/') ? remote : `/${remote}`}`.replace(/\/$/, '');
+  }
+
+  return `${location.origin}${pathPart}`.replace(/\/$/, '');
 }
 
 function withAssetBust(url) {
@@ -77,11 +99,6 @@ async function resolveGuestSession(token) {
     throw err;
   }
   return { ok: true, data };
-}
-
-function openWhatsAppWithBody(body) {
-  const wa = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(body);
-  window.open(wa, '_blank', 'noopener,noreferrer');
 }
 
 function showRsvpToast(html) {
@@ -159,6 +176,7 @@ class App {
             this.approvedSeats = Number.parseInt(String(guest.approvedSeats), 10) || 0;
             this.syncFixedSeatsUI();
           }
+          this.syncGuestNameRsvp();
         })
         .catch((e) => {
           console.warn('[SESSION] Link inválido/expirado:', e.message);
@@ -179,11 +197,22 @@ class App {
       this.approvedSeats = Number.parseInt(String(pases), 10) || this.approvedSeats;
       this.syncFixedSeatsUI();
     }
+    this.syncGuestNameRsvp();
+    this.syncFixedSeatsUI();
+  }
+
+  syncGuestNameRsvp() {
+    const primary = document.getElementById('guest_name');
+    const mirror = document.getElementById('guest_name_rsvp');
+    if (primary && mirror) mirror.textContent = primary.textContent;
   }
 
   syncFixedSeatsUI() {
+    const n = String(this.approvedSeats ?? 0);
     const fixed = document.getElementById('rsvp_personas_fixed');
-    if (fixed) fixed.textContent = String(this.approvedSeats ?? 0);
+    if (fixed) fixed.textContent = n;
+    const passesEl = document.getElementById('guest_passes');
+    if (passesEl) passesEl.textContent = n;
   }
 
   initScrollReveal() {
@@ -621,32 +650,25 @@ class App {
     sync();
   }
 
-  buildWaBody(asistencia, personas, msg, guest) {
-    let body =
-      `Confirmación XV Gabriella Sofía\n` +
-      `Invitado: ${guest}\n`;
-
-    if (asistencia === 'no') {
-      body += `Asistencia: No podré asistir\n`;
-      if (msg) body += `Mensaje: ${msg}\n`;
-    } else {
-      body += `Asistencia: Sí\n` + `Personas: ${personas}\n`;
-      if (msg) body += `Mensaje: ${msg}\n`;
-    }
-    return body;
-  }
-
   initRSVP() {
     const btn = document.getElementById('rsvp_submit_v4');
     if (!btn) return;
 
     btn.addEventListener('click', async () => {
+      const base = getXVApiBase();
+      if (!base) {
+        showRsvpToast(
+          '<p class="text-xs font-bold uppercase tracking-widest text-gray-500">No disponible</p>' +
+            '<p class="text-sm mt-2 text-gray-600">No hay servidor de confirmación configurado. Contacta al organizador.</p>'
+        );
+        return;
+      }
+
       const asistencia = document.querySelector('input[name="asistencia"]:checked')?.value;
       const personas = String(this.approvedSeats ?? 0);
       const msg = document.getElementById('rsvp_msg')?.value?.trim() || '';
       const guest = document.getElementById('guest_name')?.textContent?.trim() || 'Invitado';
 
-      const waBody = this.buildWaBody(asistencia, personas, msg, guest);
       const payload = {
         guestName: guest,
         attendance: asistencia === 'no' ? 'no' : 'si',
@@ -668,7 +690,7 @@ class App {
           btn.textContent = '¡Listo!';
           showRsvpToast(
             '<p class="text-xs font-bold uppercase tracking-widest text-gray-500">Gracias</p>' +
-              '<p class="text-sm mt-2 text-gray-600">Tu confirmación fue registrada. Te contactaremos si hace falta algo más.</p>'
+              '<p class="text-sm mt-2 text-gray-600">Tu confirmación fue registrada en el sistema. Te contactaremos si hace falta algo más.</p>'
           );
           await delay(2200);
           btn.disabled = false;
@@ -676,17 +698,16 @@ class App {
           return;
         }
       } catch (err) {
-        console.warn('[RSVP] API no disponible, usando WhatsApp:', err);
+        console.warn('[RSVP]', err);
+        const detail = err?.message ? String(err.message) : 'Intenta de nuevo más tarde.';
+        showRsvpToast(
+          '<p class="text-xs font-bold uppercase tracking-widest text-red-600">No se guardó</p>' +
+            '<p class="text-sm mt-2 text-gray-600">' +
+            detail.replace(/</g, '&lt;') +
+            '</p>'
+        );
       }
 
-      openWhatsAppWithBody(waBody);
-      btn.textContent = '¡Listo!';
-      showRsvpToast(
-        '<p class="text-xs font-bold uppercase tracking-widest text-gray-500">Gracias</p>' +
-          '<p class="text-sm mt-2 text-gray-600">Se abrió WhatsApp con tu mensaje. Si no ves la ventana, revisa el bloqueador de ventanas emergentes.</p>'
-      );
-
-      await delay(2500);
       btn.disabled = false;
       btn.textContent = 'Enviar';
     });

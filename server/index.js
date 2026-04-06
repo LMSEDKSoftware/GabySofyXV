@@ -17,6 +17,13 @@ function parseOrigins() {
   return raw.split(',').map((s) => s.trim()).filter(Boolean);
 }
 
+/** Una sola URL (evita errores si en Vercel pegan dos dominios separados por coma). */
+function firstOriginUrl(raw) {
+  const s = String(raw || '').trim();
+  if (!s) return '';
+  return s.split(',')[0].trim().replace(/\/$/, '');
+}
+
 function b64urlEncode(obj) {
   return Buffer.from(JSON.stringify(obj), 'utf8').toString('base64url');
 }
@@ -107,9 +114,9 @@ const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const GUESTS_TABLE = process.env.SUPABASE_GUESTS_TABLE || 'guests';
 const RSVP_TABLE = process.env.SUPABASE_RSVP_TABLE || 'rsvps';
 const INVITATIONS_TABLE = process.env.SUPABASE_INVITATIONS_TABLE || 'invitation_sends';
-const FRONTEND_BASE_URL = (process.env.FRONTEND_BASE_URL || 'http://127.0.0.1:5500').replace(/\/$/, '');
+const FRONTEND_BASE_URL = firstOriginUrl(process.env.FRONTEND_BASE_URL || 'http://127.0.0.1:5500');
 /** URL pública de la invitación (https + dominio real). Si no se define, se usa FRONTEND_BASE_URL. WhatsApp Web no enlaza 127.0.0.1 ni localhost. */
-const INVITE_PUBLIC_BASE_URL = (process.env.INVITE_PUBLIC_BASE_URL || '').trim().replace(/\/$/, '');
+const INVITE_PUBLIC_BASE_URL = firstOriginUrl(process.env.INVITE_PUBLIC_BASE_URL || '');
 const INVITE_PAGE_BASE_URL = (INVITE_PUBLIC_BASE_URL || FRONTEND_BASE_URL).replace(/\/$/, '');
 const TOKEN_TTL_HOURS = Number(process.env.ACCESS_LINK_TTL_HOURS || 24 * 365);
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';

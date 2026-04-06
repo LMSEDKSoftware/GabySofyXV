@@ -26,6 +26,82 @@ const OFFICIAL_PHOTOS = [
 
 const GALLERY_BASE = 'assets/img/oficial_gallery/final/';
 
+function getXVApiBase() {
+  if (typeof window === 'undefined' || typeof location === 'undefined') return '';
+  const m = document.querySelector('meta[name="xv-api-base"]');
+  const raw = m && m.getAttribute('content') != null ? String(m.getAttribute('content')).trim() : '';
+  if (raw === '') return '';
+
+  const rm = document.querySelector('meta[name="xv-api-remote"]');
+  const remote = rm && rm.getAttribute('content') != null ? String(rm.getAttribute('content')).trim().replace(/\/$/, '') : '';
+
+  const h = location.hostname || '';
+  const isLocal = h === 'localhost' || h === '127.0.0.1';
+  const onVercel = /\.vercel\.app$/i.test(h);
+
+  if (/^https?:\/\//i.test(raw)) {
+    return raw.replace(/\/$/, '');
+  }
+
+  const pathPart = raw.startsWith('/') ? raw : `/${raw}`;
+  if (isLocal || onVercel) {
+    return `${location.origin}${pathPart}`.replace(/\/$/, '');
+  }
+
+  if (remote) {
+    return /^https?:\/\//i.test(remote) ? remote : `${location.origin}${remote.startsWith('/') ? remote : `/${remote}`}`.replace(/\/$/, '');
+  }
+
+  return `${location.origin}${pathPart}`.replace(/\/$/, '');
+}
+
+async function submitRsvpToApi(payload) {
+  const base = getXVApiBase();
+  if (!base) return { ok: false, skipped: true };
+  const res = await fetch(`${base}/rsvp`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const text = await res.text();
+  let data = null;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch (_) {
+    /* noop */
+  }
+  if (!res.ok) {
+    const err = new Error(data?.error || text || res.statusText);
+    err.status = res.status;
+    throw err;
+  }
+  return { ok: true, data };
+}
+
+async function resolveGuestSession(token) {
+  const base = getXVApiBase();
+  if (!base || !token) return { ok: false, skipped: true };
+  const res = await fetch(`${base}/guest/session?t=${encodeURIComponent(token)}`, {
+    headers: { Accept: 'application/json' }
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const err = new Error(data?.error || 'No se pudo validar el link');
+    err.status = res.status;
+    throw err;
+  }
+  return { ok: true, data };
+}
+
+function showRsvpToast(html) {
+  const toast = document.createElement('div');
+  toast.className =
+    'fixed top-24 left-1/2 -translate-x-1/2 z-[5000] bg-white px-8 py-5 shadow-2xl text-center max-w-sm';
+  toast.innerHTML = html;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 4500);
+}
+
 function withAssetBust(url) {
   if (!url || url.includes('?')) return url;
   const v = typeof window !== 'undefined' && window.__INV_ASSET_V != null ? window.__INV_ASSET_V : Date.now();
@@ -41,6 +117,8 @@ class App {
 
     this.gallerySources = [];
     this._lightboxIndex = 0;
+    this.guestToken = null;
+    this.approvedSeats = 2;
     this.initUrlParams();
     this.initScrollReveal();
     this.initCountdown();
@@ -78,8 +156,34 @@ class App {
 
   initUrlParams() {
     const params = new URLSearchParams(window.location.search);
+    const token = params.get('t');
     const nombre = params.get('nombre') || params.get('name');
     const pases = params.get('pases') || params.get('p');
+
+    if (token) {
+      this.guestToken = token;
+      resolveGuestSession(token)
+        .then((r) => {
+          if (!r.ok || !r.data?.guest) return;
+          const guest = r.data.guest;
+          const nameEl = document.getElementById('guest_name');
+          const passesEl = document.getElementById('guest_passes');
+          if (nameEl && guest.fullName) nameEl.textContent = guest.fullName;
+          if (passesEl && guest.approvedSeats != null) {
+            passesEl.textContent = String(guest.approvedSeats);
+            this.approvedSeats = Number.parseInt(String(guest.approvedSeats), 10) || 0;
+            this.syncFixedSeatsUI();
+          }
+          this.syncGuestNameRsvp();
+        })
+        .catch((e) => {
+          console.warn('[SESSION]', e.message);
+          showRsvpToast(
+            '<p class="text-xs font-bold uppercase tracking-widest text-gray-500">Aviso</p>' +
+              '<p class="text-sm mt-2 text-gray-600">Tu link es inválido o expiró. Solicita un nuevo enlace al organizador.</p>'
+          );
+        });
+    }
 
     if (nombre) {
       const el = document.getElementById('guest_name');
@@ -88,7 +192,25 @@ class App {
     if (pases) {
       const el = document.getElementById('guest_passes');
       if (el) el.textContent = pases;
+      this.approvedSeats = Number.parseInt(String(pases), 10) || this.approvedSeats;
+      this.syncFixedSeatsUI();
     }
+    this.syncGuestNameRsvp();
+    this.syncFixedSeatsUI();
+  }
+
+  syncGuestNameRsvp() {
+    const primary = document.getElementById('guest_name');
+    const mirror = document.getElementById('guest_name_rsvp');
+    if (primary && mirror) mirror.textContent = primary.textContent;
+  }
+
+  syncFixedSeatsUI() {
+    const n = String(this.approvedSeats ?? 0);
+    const fixed = document.getElementById('rsvp_personas_fixed');
+    if (fixed) fixed.textContent = n;
+    const passesEl = document.getElementById('guest_passes');
+    if (passesEl) passesEl.textContent = n;
   }
 
   initScrollReveal() {
@@ -523,9 +645,7 @@ class App {
 
     const sync = () => {
       const no = document.querySelector('input[name="asistencia"][value="no"]')?.checked;
-      const personas = document.getElementById('rsvp_personas');
       const msg = document.getElementById('rsvp_msg');
-      if (personas) personas.disabled = !!no;
       if (msg) msg.disabled = !!no;
       extra.style.opacity = no ? '0.65' : '1';
     };
@@ -537,49 +657,59 @@ class App {
     const btn = document.getElementById('rsvp_submit_v4');
     if (!btn) return;
 
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
+      const base = getXVApiBase();
+      if (!base) {
+        showRsvpToast(
+          '<p class="text-xs font-bold uppercase tracking-widest text-gray-500">No disponible</p>' +
+            '<p class="text-sm mt-2 text-gray-600">No hay servidor de confirmación configurado. Contacta al organizador.</p>'
+        );
+        return;
+      }
+
       const asistencia = document.querySelector('input[name="asistencia"]:checked')?.value;
-      const personas = document.getElementById('rsvp_personas')?.value;
+      const personas = String(this.approvedSeats ?? 0);
       const msg = document.getElementById('rsvp_msg')?.value?.trim() || '';
       const guest = document.getElementById('guest_name')?.textContent?.trim() || 'Invitado';
+
+      const payload = {
+        guestName: guest,
+        attendance: asistencia === 'no' ? 'no' : 'si',
+        partySize: asistencia === 'no' ? null : personas,
+        message: msg || null,
+        pageUrl: typeof window !== 'undefined' ? window.location.href : null,
+        guestToken: this.guestToken
+      };
 
       btn.disabled = true;
       btn.textContent = 'Enviando…';
 
-      let body =
-        `Confirmación XV Gabriella Sofía\n` +
-        `Invitado: ${guest}\n`;
+      await new Promise((r) => setTimeout(r, 200));
 
-      if (asistencia === 'no') {
-        body += `Asistencia: No podré asistir\n`;
-        if (msg) body += `Mensaje: ${msg}\n`;
-      } else {
-        body += `Asistencia: Sí\n` + `Personas: ${personas}\n`;
-        if (msg) body += `Mensaje: ${msg}\n`;
-      }
-
-      const wa = 'https://wa.me/528131361132?text=' + encodeURIComponent(body);
-
-      setTimeout(() => {
-        window.open(wa, '_blank', 'noopener,noreferrer');
-        btn.textContent = '¡Listo!';
-        btn.classList.add('opacity-90');
-
-        const toast = document.createElement('div');
-        toast.className =
-          'fixed top-24 left-1/2 -translate-x-1/2 z-[5000] bg-white px-8 py-5 shadow-2xl text-center max-w-sm';
-        toast.innerHTML =
-          '<p class="text-xs font-bold uppercase tracking-widest text-gray-500">Gracias</p>' +
-          '<p class="text-sm mt-2 text-gray-600">Se abrió WhatsApp con tu mensaje. Si no ves la ventana, revisa el bloqueador de ventanas emergentes.</p>';
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 4500);
-
-        setTimeout(() => {
+      try {
+        const apiResult = await submitRsvpToApi(payload);
+        if (apiResult.ok) {
+          btn.textContent = '¡Listo!';
+          showRsvpToast(
+            '<p class="text-xs font-bold uppercase tracking-widest text-gray-500">Gracias</p>' +
+              '<p class="text-sm mt-2 text-gray-600">Tu confirmación fue registrada en el sistema.</p>'
+          );
+          await new Promise((r) => setTimeout(r, 2200));
           btn.disabled = false;
           btn.textContent = 'Enviar';
-          btn.classList.remove('opacity-90');
-        }, 2500);
-      }, 400);
+          return;
+        }
+      } catch (err) {
+        const detail = err?.message ? String(err.message) : 'Intenta de nuevo más tarde.';
+        showRsvpToast(
+          '<p class="text-xs font-bold uppercase tracking-widest text-red-600">No se guardó</p>' +
+            '<p class="text-sm mt-2 text-gray-600">' +
+            detail.replace(/</g, '&lt;') +
+            '</p>'
+        );
+      }
+      btn.disabled = false;
+      btn.textContent = 'Enviar';
     });
   }
 

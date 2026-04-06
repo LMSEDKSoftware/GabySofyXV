@@ -4,6 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="xv-api-base" content="/api" />
+    <!-- Admin en hosting estático: apunta al API desplegado en Vercel (evita 404 en /api del dominio estático). -->
+    <meta name="xv-api-remote" content="https://gaby-sofy-xv.vercel.app/api" />
     <title>Panel Admin — XV</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap"
@@ -497,12 +499,24 @@
       const API_BASE = (() => {
         if (location.protocol === 'file:') return 'http://127.0.0.1:3001/api';
         const m = document.querySelector('meta[name="xv-api-base"]');
-        let raw = m && m.content ? m.content.trim() : '';
+        let raw = m && m.getAttribute('content') != null ? String(m.getAttribute('content')).trim() : '';
         if (!raw) raw = '/api';
+        const rm = document.querySelector('meta[name="xv-api-remote"]');
+        const remote =
+          rm && rm.getAttribute('content') != null ? String(rm.getAttribute('content')).trim().replace(/\/$/, '') : '';
+        const h = location.hostname || '';
+        const isLocal = h === 'localhost' || h === '127.0.0.1';
+        const onVercel = /\.vercel\.app$/i.test(h);
         raw = raw.replace(/\/$/, '');
         if (raw.startsWith('http://') || raw.startsWith('https://')) return raw;
-        if (raw.startsWith('/')) return `${location.origin}${raw}`;
-        return `${location.origin}/${raw}`;
+        const pathPart = raw.startsWith('/') ? raw : `/${raw}`;
+        if (isLocal || onVercel) return `${location.origin}${pathPart}`.replace(/\/$/, '');
+        if (remote) {
+          return /^https?:\/\//i.test(remote)
+            ? remote
+            : `${location.origin}${remote.startsWith('/') ? remote : `/${remote}`}`.replace(/\/$/, '');
+        }
+        return `${location.origin}${pathPart}`.replace(/\/$/, '');
       })();
       const KEY = 'xv_admin_bearer';
 
