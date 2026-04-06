@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Guest Book &amp; Dedications</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8c2bee",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .tornasol-bg {
+            background: linear-gradient(135deg, #f7f6f8 0%, #e9e4ff 50%, #fdf2ff 100%);
+        }
+        .dark .tornasol-bg {
+            background: linear-gradient(135deg, #191022 0%, #2a1b3d 50%, #1f142b 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .glass-card {
+            background: rgba(42, 27, 61, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark text-[#141118] dark:text-white transition-colors duration-300">
+<div class="relative flex h-screen w-full flex-col tornasol-bg overflow-hidden max-w-[430px] mx-auto shadow-2xl">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-20 flex items-center bg-white/80 dark:bg-background-dark/80 backdrop-blur-md p-4 pb-2 justify-between border-b border-gray-100 dark:border-gray-800">
+<div class="text-primary flex size-10 shrink-0 items-center justify-center cursor-pointer">
+<span class="material-symbols-outlined">arrow_back_ios</span>
+</div>
+<div class="flex flex-col items-center">
+<h2 class="text-[#141118] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Guest Book</h2>
+<span class="text-xs text-[#756189] dark:text-gray-400">124 Dedications</span>
+</div>
+<div class="flex w-10 items-center justify-end">
+<button class="flex cursor-pointer items-center justify-center rounded-lg h-10 bg-transparent text-primary">
+<span class="material-symbols-outlined">auto_awesome</span>
+</button>
+</div>
+</header>
+<!-- Scrollable Feed -->
+<main class="flex-1 overflow-y-auto px-4 pb-32 pt-4 space-y-4">
+<!-- Profile Summary Section -->
+<div class="flex py-6 flex-col items-center text-center">
+<div class="relative">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-24 w-24 border-4 border-white dark:border-primary/20 shadow-lg" data-alt="Beautiful portrait of Gabriella Sofia smiling" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDvSLGY3f7vVb5jIjEttpzoUQ_m5wH16Yq4_nL-K-QX9aRl7_1p7ysJP2Xpy6TNCph_HywvVYxFkIKg1UArN7e8oU1yggE0W8p16DzxKpJxwS-ade2LCx-mj15gJf2cdmWa-HbzaJeHiOQmlnSfM4ZKg5l7KK0njGq1fSd2ljZRlnGUph861k59g9anZlifGhQ81YakV2EM6ZeLILEVKX4QdsOWtBiMS-1XM2tieW38drzNnAtw842MlNroh9CPbrUqQT35vbF0RUG5");'>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-primary text-white p-1 rounded-full border-2 border-white dark:border-background-dark">
+<span class="material-symbols-outlined text-xs">verified</span>
+</div>
+</div>
+<div class="mt-4">
+<p class="text-[#141118] dark:text-white text-xl font-extrabold leading-tight tracking-tight">Gabriella Sofía</p>
+<p class="text-primary font-medium text-sm">XV Celebration • 2024</p>
+</div>
+</div>
+<!-- Message Card 1 -->
+<div class="glass-card p-4 rounded-xl shadow-sm">
+<div class="flex items-center gap-3 mb-3">
+<div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">person</span>
+</div>
+<div class="flex flex-col">
+<p class="text-[#141118] dark:text-white text-sm font-bold">Aunt Maria</p>
+<p class="text-[#756189] dark:text-gray-400 text-[10px] uppercase tracking-wider">2 hours ago</p>
+</div>
+</div>
+<p class="text-[#141118] dark:text-gray-200 text-base leading-relaxed mb-4">
+                    "You look absolutely radiant today, Gabriella. May this year be as beautiful as you are! We are so proud of the young woman you've become."
+                </p>
+<div class="flex justify-between items-center">
+<span class="text-xs text-primary bg-primary/10 px-2 py-1 rounded-full">✨ Family</span>
+<button class="flex items-center gap-1 text-[#756189] hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm font-fill">favorite</span>
+<span class="text-xs font-medium">24</span>
+</button>
+</div>
+</div>
+<!-- Message Card 2 (Image Attachment) -->
+<div class="glass-card overflow-hidden rounded-xl shadow-sm">
+<div class="p-4">
+<div class="flex items-center gap-3 mb-3">
+<div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Profile photo of Carlos" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAIZGAsAPKBuyyXlGHWHnjiM9vvGM6lFUV_gbzUNuYVOWeGbLDiCLRHEiIoWrE3mOTDcFdActMbD1eVj8NpvwCewfwn-dR5V2l6gW7tGA1IQhWJIADtt_FLsi1pd_D0UslrZZt3KNEj6is9CBor6Yy0_fHgorbgA2A655R3EG4MLbYcsMs0DZ29Vxvnzk0mSMX0Z93qJv5E-Hze8oNFSPFvi7EXg5s2dbpj8cMg9eBbszwMAqnJWMTJEKVyJFiX5PhMxeHhXDL2Ma0C"/>
+</div>
+<div class="flex flex-col">
+<p class="text-[#141118] dark:text-white text-sm font-bold">The Rodriguez Family</p>
+<p class="text-[#756189] dark:text-gray-400 text-[10px] uppercase tracking-wider">5 hours ago</p>
+</div>
+</div>
+<p class="text-[#141118] dark:text-gray-200 text-base leading-relaxed mb-3">
+                        To a magical night! Enjoy every second of your special day. We love you!
+                    </p>
+</div>
+<div class="w-full h-48 bg-center bg-no-repeat bg-cover" data-alt="Group of friends laughing at a party" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDSbp5jS-lmDg2k63TSuTavDsYcB_3u6hNzZZsSiFB-RNbmD52pcCGcpax0z04UwbrI3EWm4oxcZhsjokkEGD3rlkayuvqneL6PdVHmEHnKF6ltkvDTJ514bFktfj1z-H_DEBn3NWrdZh7DbWpzkQLKLXwO8gwSLnuf62O-s3Ggsv4K54WzBqablj-T235G9NForgM86O0gy2pveEJfu1qYRrFNOaOEBSCizkJatzGfNl4Hl-A33MGdotSOTdQmTyBlpmg46D1aFTsN");'>
+</div>
+<div class="p-4 flex justify-between items-center">
+<span class="text-xs text-primary bg-primary/10 px-2 py-1 rounded-full">📸 Memories</span>
+<button class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-sm font-fill">favorite</span>
+<span class="text-xs font-medium">42</span>
+</button>
+</div>
+</div>
+<!-- Message Card 3 -->
+<div class="glass-card p-4 rounded-xl shadow-sm">
+<div class="flex items-center gap-3 mb-3">
+<div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">person</span>
+</div>
+<div class="flex flex-col">
+<p class="text-[#141118] dark:text-white text-sm font-bold">Uncle Carlos &amp; Sofia</p>
+<p class="text-[#756189] dark:text-gray-400 text-[10px] uppercase tracking-wider">Yesterday</p>
+</div>
+</div>
+<p class="text-[#141118] dark:text-gray-200 text-base leading-relaxed mb-4">
+                    "Watching you grow up has been a joy. Happy Quinceañera to our favorite niece. Dream big, the world is yours!"
+                </p>
+<div class="flex justify-between items-center">
+<span class="text-xs text-primary bg-primary/10 px-2 py-1 rounded-full">💖 Inspiration</span>
+<button class="flex items-center gap-1 text-[#756189]">
+<span class="material-symbols-outlined text-sm">favorite</span>
+<span class="text-xs font-medium">18</span>
+</button>
+</div>
+</div>
+<!-- Message Card 4 -->
+<div class="glass-card p-4 rounded-xl shadow-sm">
+<div class="flex items-center gap-3 mb-3">
+<div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">person</span>
+</div>
+<div class="flex flex-col">
+<p class="text-[#141118] dark:text-white text-sm font-bold">Valeria M.</p>
+<p class="text-[#756189] dark:text-gray-400 text-[10px] uppercase tracking-wider">Yesterday</p>
+</div>
+</div>
+<p class="text-[#141118] dark:text-gray-200 text-base italic leading-relaxed mb-4">
+                    "Best friend since kindergarten and now seeing you as a princess... I'm crying! Love you Gabi!"
+                </p>
+<div class="flex justify-between items-center">
+<span class="text-xs text-primary bg-primary/10 px-2 py-1 rounded-full">👯 BFF</span>
+<button class="flex items-center gap-1 text-[#756189]">
+<span class="material-symbols-outlined text-sm font-fill text-pink-500">favorite</span>
+<span class="text-xs font-medium">56</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Fixed Bottom Input -->
+<div class="absolute bottom-0 left-0 right-0 p-4 bg-white/90 dark:bg-background-dark/90 backdrop-blur-xl border-t border-gray-100 dark:border-gray-800 safe-area-bottom">
+<div class="flex items-center gap-3">
+<!-- Add Image Button -->
+<button class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-background-light dark:bg-gray-800 text-[#756189] dark:text-gray-400">
+<span class="material-symbols-outlined">image</span>
+</button>
+<!-- Text Input -->
+<div class="relative flex-1">
+<input class="w-full bg-background-light dark:bg-gray-800 border-none rounded-full px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary dark:text-white placeholder-[#756189] dark:placeholder-gray-500" placeholder="Write a dedication..." type="text"/>
+</div>
+<!-- Send Button -->
+<button class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-white shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

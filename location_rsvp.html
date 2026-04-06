@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8c2bee",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<title>Location &amp; RSVP - Gabriella Sofía's XV</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#141118] dark:text-white transition-colors duration-300">
+<div class="relative flex min-h-screen w-full flex-col max-w-[430px] mx-auto bg-white dark:bg-background-dark shadow-2xl overflow-x-hidden">
+<!-- TopAppBar -->
+<div class="sticky top-0 z-50 flex items-center bg-white/80 dark:bg-background-dark/80 backdrop-blur-md p-4 justify-between border-b border-gray-100 dark:border-white/10">
+<div class="text-[#141118] dark:text-white flex size-10 shrink-0 items-center justify-center cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 rounded-full">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</div>
+<h2 class="text-[#141118] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-10">Location &amp; RSVP</h2>
+</div>
+<!-- Scrollable Content -->
+<div class="flex flex-col">
+<!-- Map Component -->
+<div class="flex px-4 py-4">
+<div class="w-full bg-center bg-no-repeat aspect-[16/10] bg-cover rounded-xl shadow-sm border border-gray-200 dark:border-white/10" data-alt="Modern map showing the venue location in Beverly Hills" data-location="Beverly Hills" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB_yx6wrAexfaoXLpR6HHetgcBOGtAq9sYfQ1Nd_9aQBEBUnDYDHGzR_q3VgXyPCRz-xWBUWheP21LT4Ts2FLtHkdXgDYgGYmJRt6MnpmgAaf7Y2gY1OkSw482W0o_oomWd4WKXdEPoA5eUJmvTAGdxm6b61P7D033p2KFzFIV8insF4-081KlUW_f4i0QYz1YTvP7VQog-NHhr01Zj4LtqSVqyNttsRjDweb6qlsg--8F082UrTQ4F9WBZmCRQ8BjNDWgfGZ56e-io");'>
+<!-- Custom Map Pin Overlay -->
+<div class="w-full h-full flex items-center justify-center">
+<div class="bg-primary p-2 rounded-full shadow-lg animate-pulse">
+<span class="material-symbols-outlined text-white text-3xl">location_on</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Venue Details -->
+<div class="flex flex-col items-center">
+<h3 class="text-[#141118] dark:text-white tracking-tight text-2xl font-extrabold leading-tight px-6 text-center pt-2">Grand Ballroom Palace</h3>
+<p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal pb-4 pt-1 px-6 text-center">123 Elegance Blvd, Beverly Hills, CA 90210</p>
+<!-- Open in Maps Button -->
+<div class="flex px-4 py-1 justify-center">
+<button class="flex min-w-[160px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-11 px-6 bg-primary/10 hover:bg-primary/20 text-primary gap-2 transition-all">
+<span class="material-symbols-outlined text-[20px]">map</span>
+<span class="truncate text-sm font-bold leading-normal">Open in Maps</span>
+</button>
+</div>
+</div>
+<div class="h-8"></div>
+<!-- RSVP Section Container -->
+<div class="flex flex-col bg-background-light dark:bg-white/5 rounded-t-[2.5rem] px-6 py-8 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] border-t border-gray-100 dark:border-white/5">
+<div class="w-12 h-1.5 bg-gray-300 dark:bg-white/20 rounded-full mx-auto mb-8"></div>
+<h4 class="text-[#141118] dark:text-white text-xl font-bold mb-6">Will you be joining us?</h4>
+<!-- Attendance Toggle -->
+<div class="flex items-center justify-between bg-white dark:bg-background-dark p-4 rounded-xl mb-6 shadow-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">celebration</span>
+<span class="font-medium">Confirm Attendance</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Guest Count Select -->
+<div class="flex flex-col mb-6">
+<label class="text-sm font-bold text-gray-500 dark:text-gray-400 mb-2 ml-1 uppercase tracking-wider">Reserved Seats</label>
+<div class="grid grid-cols-4 gap-3">
+<button class="h-12 flex items-center justify-center rounded-lg bg-white dark:bg-background-dark border border-gray-100 dark:border-white/10 font-bold hover:border-primary transition-colors">1</button>
+<button class="h-12 flex items-center justify-center rounded-lg bg-primary text-white font-bold ring-4 ring-primary/20">2</button>
+<button class="h-12 flex items-center justify-center rounded-lg bg-white dark:bg-background-dark border border-gray-100 dark:border-white/10 font-bold hover:border-primary transition-colors">3</button>
+<button class="h-12 flex items-center justify-center rounded-lg bg-white dark:bg-background-dark border border-gray-100 dark:border-white/10 font-bold hover:border-primary transition-colors">4+</button>
+</div>
+</div>
+<!-- Dietary Preferences -->
+<div class="flex flex-col mb-8">
+<label class="text-sm font-bold text-gray-500 dark:text-gray-400 mb-2 ml-1 uppercase tracking-wider">Dietary Preferences</label>
+<div class="bg-white dark:bg-background-dark rounded-xl p-4 shadow-sm space-y-4">
+<div class="flex items-center justify-between">
+<span class="text-sm">Vegetarian / Vegan</span>
+<input class="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary" type="checkbox"/>
+</div>
+<div class="flex items-center justify-between border-t border-gray-50 dark:border-white/5 pt-3">
+<span class="text-sm">Gluten-Free</span>
+<input class="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary" type="checkbox"/>
+</div>
+<div class="flex flex-col gap-2 border-t border-gray-50 dark:border-white/5 pt-3">
+<span class="text-sm">Other Allergies</span>
+<input class="w-full bg-background-light dark:bg-white/5 border-none rounded-lg h-10 px-3 text-sm focus:ring-2 focus:ring-primary/50" placeholder="Tell us more..." type="text"/>
+</div>
+</div>
+</div>
+<!-- Save RSVP Button -->
+<div class="flex flex-col gap-3 pb-8">
+<button class="w-full flex cursor-pointer items-center justify-center rounded-xl h-14 bg-primary text-white gap-2 font-bold text-lg shadow-lg shadow-primary/30 active:scale-[0.98] transition-all">
+<span class="truncate">Confirm RSVP</span>
+</button>
+<p class="text-center text-xs text-gray-400">Please confirm by October 15th</p>
+</div>
+</div>
+</div>
+<!-- iOS Home Indicator Spacing -->
+<div class="h-5 bg-background-light dark:bg-background-dark"></div>
+</div>
+</body></html>

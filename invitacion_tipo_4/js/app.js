@@ -107,6 +107,7 @@ class App {
     const track = document.getElementById('inv_hero_track');
     const layers = document.getElementById('inv_hero_layers');
     const img = document.getElementById('inv_hero_img');
+    const logoHero = document.getElementById('inv_sofia_logo_hero');
     if (!track || !layers || !img) return;
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -120,12 +121,14 @@ class App {
       const intersects = rect.bottom > 0 && rect.top < vh;
       if (!intersects) {
         layers.classList.remove('is-active');
+        if (logoHero) logoHero.style.transform = '';
         return;
       }
       layers.classList.add('is-active');
 
       if (reduced) {
         img.style.objectPosition = '50% 45%';
+        if (logoHero) logoHero.style.transform = '';
         return;
       }
 
@@ -133,6 +136,12 @@ class App {
       p = clamp(p, 0, 1);
       const yPct = (1 - p) * 100;
       img.style.objectPosition = `50% ${yPct}%`;
+
+      if (logoHero) {
+        const lift = p * 14;
+        const subtle = 1 + p * 0.035;
+        logoHero.style.transform = `translateY(${lift}px) scale(${subtle})`;
+      }
     };
 
     window.addEventListener('scroll', tick, { passive: true });

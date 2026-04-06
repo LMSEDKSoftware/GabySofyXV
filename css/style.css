@@ -1,206 +1,1523 @@
+/* Invitación tipo 4 — paleta alineada con index.html / welcome_countdown (Tailwind theme) */
+
+/* Paleta XV + tornasol (rosa / celeste / morado), alineada con welcome_countdown */
 :root {
-  /* HSL Tailored Colors */
-  --primary-h: 345;
-  --primary-s: 100%;
-  --primary-l: 61%; /* #FF3366 */
-  --primary: hsl(var(--primary-h), var(--primary-s), var(--primary-l));
-  
-  --secondary: #00F5FF;
-  --vibe-purple: #8A2BE2;
-  --neon-lime: #CCFF00;
-  
-  --bg-page: #F8F7FF;
-  --white: #FFFFFF;
-  --black: #1A1A1A;
-  --gray-light: #F3F4F6;
-  --gray-mid: #9CA3AF;
-  --gray-dark: #374151;
-  
-  /* Glassmorphism */
-  --glass: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.5);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  
-  /* Gradients */
-  --yolo-gradient: linear-gradient(180deg, #FF9EAA 0%, #E2C7FF 40%, #A2FFD6 100%);
-  --premium-purple: linear-gradient(135deg, #7B2FBE 0%, #5B1F9A 100%);
-  
-  /* Radius */
-  --radius-sm: 8px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
-  --radius-xl: 40px;
+  --primary: #ff3366;
+  --secondary: #00f5ff;
+  --vibe-purple: #8a2be2;
+  --neon-lime: #ccff00;
+  --background-light: #fafafa;
+  --inv-rose: #ff3366;
+  --inv-blush: #f3f0f7;
+  --inv-gold: #8a2be2;
+  --inv-ink: #1a1a1a;
+  --inv-white: #ffffff;
+  --inv-page-bg: #f4f2f8;
+  /* Blanco → melocotón/rosa → lavanda → morado (pastel, tipografía legible) */
+  --yolo-gradient: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #fff7f8 12%,
+    #ffe8ec 28%,
+    #efdff5 48%,
+    #d8cef0 72%,
+    #9a89b0 100%
+  );
+  --tornasol-overlay: linear-gradient(
+    125deg,
+    rgba(255, 51, 102, 0.22) 0%,
+    rgba(226, 199, 255, 0.35) 35%,
+    rgba(0, 245, 255, 0.18) 65%,
+    rgba(138, 43, 226, 0.2) 100%
+  );
+  /* Prueba sin vidrio: bordes y sombras planas */
+  --section-border: #e8e4ef;
+  --section-shadow: none;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
 }
 
-body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  color: var(--black);
-  background: var(--bg-page);
+.inv-body {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
+  min-height: 100dvh;
+  background: var(--inv-page-bg);
+  background-attachment: scroll;
+  color: var(--inv-ink);
   overflow-x: hidden;
-}
-
-/* Base Layout (Mobile First Container) */
-#app {
-  width: 100%;
-  max-width: 430px;
-  min-height: 100vh;
+  line-height: 1.65;
   position: relative;
-  background: var(--white);
-  box-shadow: 0 0 40px rgba(0,0,0,0.1);
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch; /* Smooth scroll for iOS */
+  isolation: isolate;
 }
 
-/* Utilities */
-.glass {
-  background: var(--glass);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
+/* Capa tornasol desactivada en esta prueba (fondo plano) */
+.inv-body::before {
+  content: none;
+  display: none;
 }
 
-.yolo-bg {
-  background: var(--yolo-gradient);
+#app {
+  position: relative;
+  z-index: 1;
 }
 
-.tilt-left { transform: rotate(-3deg); }
-.tilt-right { transform: rotate(2deg); }
-
-/* Animation: App Screen Transition */
-@keyframes slideIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.screen-animate {
-  animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Shared Components Styles */
-.top-bar {
-  position: fixed;
-  top: 0;
+/* ——— Hero: parallax (foto fija + track en flujo, como inv-cd-parallax) ——— */
+.inv-hero-parallax-zone {
+  position: relative;
   width: 100%;
-  max-width: 430px;
-  padding: 16px 24px;
-  z-index: 100;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  margin: 0;
+  padding: 0;
+  text-align: center;
 }
 
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 430px;
-  padding: 12px 24px 24px;
-  z-index: 1000;
-  display: flex;
-  justify-content: space-between;
-  border-top-left-radius: var(--radius-lg);
-  border-top-right-radius: var(--radius-lg);
+.inv-hero-parallax-track {
+  position: relative;
+  z-index: 15;
+  min-height: 155vh;
+  height: 155vh;
 }
 
-.screen {
-  padding-bottom: 120px; /* Seguridad para el menú fijo */
-  min-height: 100vh;
-}
-
-.nav-item {
+/* Track total = stage (1 pantalla, como el hero original) + colchón solo para scroll parallax */
+.inv-hero-parallax-flow {
+  box-sizing: border-box;
+  min-height: 155vh;
+  height: 155vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  color: var(--gray-mid);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.nav-item.active {
-  color: var(--primary);
-  font-weight: 700;
-}
-
-.nav-item .material-symbols-outlined {
-  font-size: 24px;
-}
-
-.nav-item span:last-child {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* Form Styles */
-.input-premium {
   width: 100%;
-  padding: 16px;
-  border-radius: var(--radius-md);
-  border: 2px solid var(--gray-light);
-  font-family: inherit;
-  font-size: 16px;
-  transition: all 0.3s;
-  outline: none;
+  color: #fff;
 }
 
-.input-premium:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 4px hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.1);
-}
-
-.btn-premium {
+/* Equivale a .inv-hero__inner sobre 100vh: distancia entre “15 años” y bloque nombre/fecha intacta */
+.inv-hero-parallax-stage {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  min-height: 100vh;
+  min-height: 100dvh;
   width: 100%;
-  padding: 18px;
-  border: none;
-  border-radius: var(--radius-md);
-  background: var(--black);
-  color: white;
-  font-weight: 800;
-  font-size: 16px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  transition: all 0.2s;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  padding: max(0.75rem, env(safe-area-inset-top, 0px)) 1.25rem
+    calc(5.35rem + env(safe-area-inset-bottom, 0px));
 }
 
-.btn-premium:active {
-  transform: scale(0.98);
+.inv-hero-parallax-scroll-pad {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
 }
 
-.btn-bubble {
-  width: 40px;
-  height: 40px;
-  background: var(--neon-lime);
+/* Capas fijas: la foto no se mueve con el scroll; solo object-position (JS) */
+.inv-hero-parallax-layers {
+  position: fixed;
+  inset: 0;
+  z-index: 14;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.inv-hero-parallax-layers.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.inv-hero-parallax-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.inv-hero-parallax-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 35%;
+  display: block;
+  transform: translateZ(0);
+}
+
+/* 15 + Años: más abajo del borde superior para no tapar el rostro */
+.inv-hero__top {
+  flex-shrink: 0;
+  padding-top: clamp(2rem, 9vh, 4.5rem);
+}
+
+/* Nombre + fecha: ancho acorde a ~70px × 2 líneas script */
+.inv-hero__bottom {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: min(26rem, 100%);
+  padding-inline: 0.35rem;
+}
+
+/* Vidrio: panel claro esmerilado (referencia móvil) */
+.inv-hero__title-box {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1rem 1.35rem 1.05rem;
+  border-radius: 0;
+  background: rgb(255 255 255 / 0.14);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgb(255 255 255 / 0.2);
+  box-shadow: 0 8px 28px rgb(0 0 0 / 0.12);
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Logotipo Sofía (estrella + S): hero, secciones y pie */
+.inv-sofia-logo {
+  position: relative;
+  line-height: 0;
+}
+
+.inv-sofia-logo__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.inv-sofia-logo__float {
+  display: block;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.inv-sofia-logo--hero {
+  width: clamp(4rem, 21vw, 6.75rem);
+  margin: 0 auto 0.65rem;
+}
+
+.inv-sofia-logo__parallax {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.inv-sofia-logo--hero .inv-sofia-logo__shell {
+  opacity: 0;
+  animation: inv-sofia-logo-hero-in 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.25s forwards;
+}
+
+.inv-sofia-logo--hero .inv-sofia-logo__float {
+  animation: inv-sofia-logo-float 4.8s ease-in-out 1.2s infinite;
+}
+
+.inv-sofia-logo--hero .inv-sofia-logo__img {
+  filter: drop-shadow(0 0 14px rgba(138, 43, 226, 0.45)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35));
+}
+
+.inv-sofia-logo--footer {
+  width: clamp(2.65rem, 13vw, 3.85rem);
+  margin: 0 auto 0.85rem;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.55s ease 0.1s,
+    transform 0.55s ease 0.1s;
+}
+
+footer.inv-footer.reveal.active .inv-sofia-logo--footer {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.inv-sofia-logo--footer .inv-sofia-logo__img {
+  animation: inv-sofia-logo-pulse-glow-img 3.2s ease-in-out 0.8s infinite;
+}
+
+@keyframes inv-sofia-logo-hero-in {
+  from {
+    opacity: 0;
+    transform: scale(0.82) translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes inv-sofia-logo-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes inv-sofia-logo-pulse-glow-img {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 8px rgba(138, 43, 226, 0.35));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 18px rgba(138, 43, 226, 0.6));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inv-sofia-logo--hero .inv-sofia-logo__float,
+  .inv-sofia-logo--footer .inv-sofia-logo__img {
+    animation: none !important;
+  }
+
+  .inv-sofia-logo--hero .inv-sofia-logo__shell {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  .inv-sofia-logo--footer {
+    opacity: 1;
+    transform: none;
+  }
+
+  .inv-sofia-logo--footer .inv-sofia-logo__img {
+    filter: drop-shadow(0 0 10px rgba(138, 43, 226, 0.3));
+  }
+}
+
+/* “15”: menor que el nombre (70px); ~55px tope ≈ 3.4375rem; escala en pantallas estrechas */
+.inv-hero__fifteen {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.15em;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+  font-size: min(3.4375rem, 15.43vw);
+  line-height: 0.85;
+  letter-spacing: 0.02em;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+
+.inv-hero__anos {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  margin-top: 0.65rem;
+  opacity: 0.95;
+}
+
+/*
+ * Nombre en dos líneas: referencia 70px → 70 ÷ 16 = 4.375rem.
+ * min(4.375rem, 18vw): en ~389px de ancho 18vw ≈ 70px; en móviles más angostos baja un poco para que quepa “Gabriella”.
+ */
+.inv-hero__name {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.06em;
+  margin: 0;
+  margin-top: 0;
+  font-size: min(4.375rem, 18vw);
+  line-height: 0.9;
+  font-weight: 400;
+  color: #d7bfff;
+  text-shadow: 0 1px 12px rgb(0 0 0 / 0.28);
+}
+
+.inv-hero__name-line {
+  display: block;
+  text-align: center;
+}
+
+.inv-hero__date {
+  margin: 0;
+  margin-top: 0.55rem;
+  padding-top: 0.6rem;
+  width: 100%;
+  max-width: 100%;
+  font-size: 0.6875rem; /* 11px — proporción tipo referencia respecto a 70px */
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #fff;
+  border-top: 1px solid rgb(138 43 226 / 0.88);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  box-sizing: border-box;
+}
+
+/* ——— Secciones ——— */
+.inv-section {
+  position: relative;
+  z-index: 22;
+  padding: 4.5rem 1.5rem;
+  max-width: 42rem;
+  margin: 0 auto;
+  text-align: center;
+  background: #ffffff;
+  border-bottom: 1px solid var(--section-border);
+  box-shadow: var(--section-shadow);
+}
+
+.inv-section--blush {
+  background: var(--inv-blush);
+  border-bottom: 1px solid var(--section-border);
+  max-width: none;
+}
+
+/* Vidrio biselado reutilizable (fondo base = --inv-glass-bisel-base; defecto: blush) */
+.inv-section--glass-bisel {
+  --inv-glass-bisel-base: var(--inv-blush);
+  background-color: transparent;
+  background-image:
+    linear-gradient(
+      165deg,
+      rgba(255, 255, 255, 0.48) 0%,
+      rgba(255, 255, 255, 0.16) 42%,
+      rgba(255, 255, 255, 0.06) 100%
+    ),
+    var(--inv-glass-bisel-base);
+  background-attachment: scroll;
+  backdrop-filter: blur(16px) saturate(1.1);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.42);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.38);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    inset 0 -1px 0 rgba(100, 70, 140, 0.12),
+    0 14px 44px rgba(100, 50, 160, 0.09);
+}
+
+/* Degradado y-o + tornasol animado (misma base que la intro; reutilizable p. ej. Mis recuerdos) */
+.inv-section--yolo-surface {
+  position: relative;
+  isolation: isolate;
+  max-width: none;
+  width: 100%;
+  margin: 0 auto;
+  --inv-glass-bisel-base: var(--yolo-gradient);
+}
+
+.inv-section--yolo-surface::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 100% 80% at 10% 0%, rgba(255, 51, 102, 0.14), transparent 55%),
+    radial-gradient(ellipse 90% 70% at 95% 15%, rgba(138, 43, 226, 0.12), transparent 50%),
+    radial-gradient(ellipse 120% 60% at 50% 100%, rgba(114, 89, 153, 0.12), transparent 55%);
+  opacity: 0.72;
+  animation: inv-tornasol-local 22s ease-in-out infinite alternate;
+}
+
+.inv-section--yolo-surface > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes inv-tornasol-local {
+  0% {
+    opacity: 0.65;
+    filter: hue-rotate(-8deg) saturate(1.05);
+  }
+  100% {
+    opacity: 0.92;
+    filter: hue-rotate(12deg) saturate(1.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inv-section--yolo-surface::before {
+    animation: none;
+    opacity: 0.78;
+    filter: none;
+  }
+}
+
+/* Título de sección — Ceremonia (Pinyon Script); color vía utilidades Tailwind p.ej. text-vibe-purple */
+.inv-title-pinyon {
+  font-family: 'Pinyon Script', cursive;
+  font-size: clamp(2.75rem, 11vw, 4.25rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  text-shadow: none;
+}
+
+.inv-kicker {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.55);
+}
+
+.inv-block-title {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.inv-text {
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: rgba(26, 26, 26, 0.78);
+  line-height: 1.75;
+}
+
+.inv-text--lead {
+  font-size: 1.05rem;
+}
+
+.inv-guest-name {
+  color: var(--inv-rose);
+}
+
+.inv-passes {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.inv-passes__n {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--inv-rose);
+  line-height: 1;
+}
+
+.inv-passes__label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.5);
+}
+
+.inv-venue-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem;
+}
+
+.inv-venue-sub {
+  font-size: 1rem;
+}
+
+/* Fotos Ceremonia / Recepción: mismo marco, proporción y velo lavanda para unificar día/noche */
+.inv-venue-visual {
+  position: relative;
+  margin: clamp(1.35rem, 3.5vw, 2.25rem) auto 0;
+  max-width: min(20.5rem, 100%);
+  border-radius: 1.125rem;
+  overflow: hidden;
+  border: 1px solid rgb(215 191 255 / 0.42);
+  box-shadow:
+    0 16px 48px rgb(60 40 100 / 0.12),
+    0 4px 20px rgb(215 191 255 / 0.2);
+}
+
+.inv-venue-visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(
+    180deg,
+    rgb(215 191 255 / 0.16) 0%,
+    transparent 36%,
+    transparent 64%,
+    rgb(90 40 120 / 0.14) 100%
+  );
+}
+
+.inv-venue-visual img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: center;
+}
+
+.inv-btn {
+  display: inline-block;
+  background: var(--vibe-purple);
+  color: #fff !important;
+  padding: 0.9rem 2.25rem;
+  border-radius: 9999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 2px solid var(--vibe-purple);
+  box-shadow: none;
+  transition: transform 0.2s, background 0.2s, border-color 0.2s;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.inv-btn:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff !important;
+}
+
+.inv-btn--ghost {
+  background: #ffffff;
+  color: var(--vibe-purple) !important;
+  border: 2px solid var(--vibe-purple);
+  box-shadow: none;
+}
+
+.inv-btn--ghost:hover {
+  background: linear-gradient(135deg, var(--primary), var(--vibe-purple));
+  color: #fff !important;
+  border-color: transparent;
+}
+
+.inv-btn--wide {
+  text-align: center;
+}
+
+.inv-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ——— Parallax Mis recuerdos → Regalos (igual que hero: 100vh etapa + colchón; vidrio en el track) ——— */
+.inv-mr-parallax-zone {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.inv-mr-parallax-track {
+  position: relative;
+  z-index: 17;
+  min-height: 155vh;
+  height: 155vh;
+}
+
+.inv-mr-parallax-flow {
+  box-sizing: border-box;
+  min-height: 155vh;
+  height: 155vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.inv-mr-parallax-stage {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: max(0.75rem, env(safe-area-inset-top, 0px)) 1.25rem
+    calc(5.35rem + env(safe-area-inset-bottom, 0px));
+}
+
+.inv-mr-parallax-scroll-pad {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+}
+
+/* Vidrio Mis recuerdos (referencia: panel oscuro tintado + blur; título azul cielo, cuerpo blanco, hashtag dorado) */
+.inv-mr-parallax-glass {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: min(30rem, 92vw);
+  padding: clamp(1.35rem, 4.2vw, 2.15rem) clamp(1.5rem, 5vw, 2.85rem);
+  border-radius: 0;
+  background: rgb(42 18 32 / 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  box-shadow:
+    0 12px 40px rgb(0 0 0 / 0.28),
+    inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+
+.inv-mr-parallax-glass__title.inv-title-pinyon {
+  margin: 0;
+  line-height: 1.08;
+  color: #d7bfff;
+  text-shadow: 0 2px 14px rgb(0 0 0 / 0.35);
+}
+
+.inv-mr-parallax-glass__lead {
+  margin: clamp(1.05rem, 2.8vh, 1.45rem) 0 0;
+  max-width: 26rem;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: clamp(0.82rem, 2.65vw, 0.98rem);
+  line-height: 1.52;
+  font-weight: 500;
+  color: #fff;
+  text-shadow: 0 1px 6px rgb(0 0 0 / 0.35);
+}
+
+.inv-mr-parallax-glass__hashtag {
+  margin: clamp(0.95rem, 2.6vh, 1.35rem) 0 0;
+  font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.2rem, 3.7vw, 1.68rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #d7bfff;
+  text-shadow: 0 1px 10px rgb(0 0 0 / 0.32);
+}
+
+.inv-mr-parallax-layers {
+  position: fixed;
+  inset: 0;
+  z-index: 16;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.inv-mr-parallax-layers.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.inv-mr-parallax-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.inv-mr-parallax-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 45%;
+  display: block;
+  transform: translateZ(0);
+}
+
+.inv-mr-parallax-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(30, 24, 40, 0.18) 50%,
+    rgba(20, 16, 28, 0.28) 100%
+  );
+  pointer-events: none;
+}
+
+/* ——— Zona 2: scroll largo + imagen fija en viewport + caja que sube ——— */
+.inv-cd-parallax-zone {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Pista: altura = scroll del parallax; contenido en flujo (1:1 con el scroll del documento) */
+.inv-cd-parallax-track {
+  position: relative;
+  z-index: 19;
+  min-height: 175vh;
+  height: 175vh;
+}
+
+/* Padding tipo DevTools: arriba muy ajustado; abajo clamp(…, 2.5vh, 10.5rem) */
+.inv-cd-parallax-flow {
+  box-sizing: border-box;
+  min-height: 175vh;
+  height: 100%;
+  padding: clamp(1.875rem, 3.35vh, 3.375rem) 1.25rem clamp(2.25rem, 2.5vh, 10.5rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.inv-cd-parallax-card-wrap {
+  width: 100%;
+  max-width: 22rem;
+  flex-shrink: 0;
+}
+
+/* Capas fijas al viewport: la foto NO se mueve; solo cambia el encuadre (object-position) */
+.inv-cd-parallax-layers {
+  position: fixed;
+  inset: 0;
+  z-index: 18;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  /* Sin transición: al activarse, opacidad 1 al instante (evita sensación de “bajar” el brillo) */
+}
+
+.inv-cd-parallax-layers.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.inv-cd-parallax-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.inv-cd-parallax-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 100%;
+  display: block;
+  transform: translateZ(0);
+}
+
+.inv-cd-parallax-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(20, 18, 24, 0.1) 0%,
+    rgba(20, 18, 24, 0.26) 55%,
+    rgba(20, 18, 24, 0.36) 100%
+  );
+  pointer-events: none;
+}
+
+.inv-cd-parallax-card-inner {
+  width: 100%;
+}
+
+.inv-countdown-card {
+  width: 100%;
+  max-width: 22rem;
+  padding: 1.35rem 1.25rem 1.5rem;
+  border-radius: 14px;
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    #faf6f9 24%,
+    #eee5f3 55%,
+    #ddd0ea 100%
+  );
+  box-shadow: 0 6px 26px rgba(70, 45, 100, 0.07);
+  border: 1px solid rgba(154, 137, 176, 0.32);
+}
+
+/* Sobre foto: mismo tono pastel + ligero vidrio para integrarse con la invitación */
+.inv-cd-parallax-card-inner.inv-countdown-card {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(250, 246, 249, 0.92) 32%,
+    rgba(235, 226, 243, 0.93) 68%,
+    rgba(218, 208, 234, 0.94) 100%
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 8px 32px rgba(35, 22, 55, 0.1);
+}
+
+/* Zona 3: por encima de la capa fija (28 > 18) para tapar la foto al hacer scroll */
+.inv-cd-parallax-zone ~ .inv-section,
+.inv-cd-parallax-zone ~ footer.inv-footer {
+  z-index: 28;
+}
+
+/* Tarjeta que sube y tapa la foto (como el bloque verde de la referencia), adaptado a la paleta de la invitación */
+.inv-section--after-parallax {
+  border-radius: 26px 26px 0 0;
+  /* ~25 % más solapamiento que -20px → menos hueco respecto a la foto / track */
+  margin-top: -26px;
+  padding-top: calc(3.375rem + 15px);
+  background: #faf8fc;
+  box-shadow: none;
+  border-bottom: 1px solid var(--section-border);
+}
+
+.inv-countdown-card__title {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.68);
+  text-align: center;
+  margin: 0 0 1.1rem;
+  text-shadow: none;
+}
+
+/* Countdown (default, secciones normales) */
+.inv-countdown {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.25rem 2rem;
+}
+
+.inv-countdown--boxed {
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  gap: 0.35rem 0.5rem;
+  width: 100%;
+}
+
+.inv-countdown__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 4.5rem;
+}
+
+.inv-countdown--boxed .inv-countdown__item {
+  flex: 1;
+  min-width: 0;
+}
+
+.inv-countdown__val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.25rem;
+  font-weight: 600;
+  color: var(--vibe-purple);
+  line-height: 1.2;
+}
+
+.inv-countdown__item:last-child .inv-countdown__val {
+  color: var(--primary);
+  text-shadow: 0 0 12px rgba(255, 51, 102, 0.35);
+}
+
+.inv-countdown__lbl {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(26, 26, 26, 0.45);
+  margin-top: 0.35rem;
+}
+
+/* Números y etiquetas alineados con la paleta pastel del sitio */
+.inv-countdown-card .inv-countdown__val {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: clamp(1.65rem, 7vw, 2.1rem);
+  font-weight: 800;
+  color: #7b5aa8 !important;
+  text-shadow: none;
+}
+
+.inv-countdown-card .inv-countdown__item:last-child .inv-countdown__val {
+  color: var(--primary) !important;
+  text-shadow: none;
+}
+
+.inv-countdown-card .inv-countdown__lbl {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: rgba(26, 26, 26, 0.48);
+  margin-top: 0.4rem;
+  text-shadow: none;
+}
+
+.inv-names {
+  font-weight: 600;
+}
+
+.inv-ampersand {
+  opacity: 0.85;
+}
+
+.inv-card {
+  background: #ffffff;
+  border: 1px solid var(--section-border);
+  box-shadow: none;
+  padding: 1.75rem 1.5rem;
+  border-radius: 24px;
+  text-align: center;
+}
+
+/* Regalos: opciones con iconos Material */
+.inv-gift-options__card {
+  text-align: left;
+}
+
+.inv-gift-options__head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.inv-gift-options__head--sobre {
+  gap: 0.35rem;
+}
+
+.inv-gift-options__icon {
+  font-size: 1.75rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--vibe-purple);
+  font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 28;
+}
+
+.inv-gift-options__label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.55);
+  margin-left: 0.15rem;
+}
+
+.inv-gift-options__head--sobre .inv-gift-options__label {
+  margin-left: 0.35rem;
+}
+
+.inv-gift-options__card-num {
+  user-select: all;
+}
+
+/* Galería: carrusel horizontal, una foto, scroll-snap + swipe */
+.inv-gallery-slider {
+  max-width: min(22rem, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.inv-gallery-slider__viewport {
+  display: flex;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  border-radius: 22px;
+  outline: none;
+  cursor: grab;
+  touch-action: pan-x;
+  user-select: none;
+  -webkit-user-select: none;
+  overscroll-behavior-x: contain;
+  box-shadow: none;
+  border: 1px solid var(--section-border);
+}
+
+.inv-gallery-slider__viewport.is-dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+}
+
+.inv-gallery-slider__viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.inv-gallery-slider__viewport:focus-visible {
+  outline: 2px solid var(--vibe-purple);
+  outline-offset: 3px;
+}
+
+.inv-gallery-slider__slide {
+  flex: 0 0 100%;
+  min-width: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  aspect-ratio: 3 / 4;
+  cursor: pointer;
+  position: relative;
+}
+
+.inv-gallery-slider__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 22px;
+  pointer-events: none;
+}
+
+.inv-gallery-slider__dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 1rem;
+}
+
+.inv-gallery-slider__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(26, 26, 26, 0.22);
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.inv-gallery-slider__dot:hover {
+  background: rgba(138, 43, 226, 0.45);
+  transform: scale(1.15);
+}
+
+.inv-gallery-slider__dot.is-active {
+  background: var(--vibe-purple);
+  transform: scale(1.35);
+  box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.28);
+}
+
+.inv-gallery-slider__dot:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.inv-hotel-card {
+  text-align: left;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.inv-hotel-card:last-child {
+  border-bottom: none;
+}
+
+.inv-link {
+  color: var(--inv-rose);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.inv-link:hover {
+  text-decoration: underline;
+}
+
+/* RSVP */
+.inv-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.45);
+  margin-bottom: 0.5rem;
+}
+
+.inv-input {
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+  padding: 0.65rem 0;
+  font-size: 0.9rem;
+  font-family: inherit;
+  background: transparent;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.inv-input:focus {
+  border-color: var(--inv-rose);
+}
+
+.inv-input--area {
+  resize: vertical;
+  min-height: 4rem;
+}
+
+.inv-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.inv-radio input {
+  accent-color: var(--inv-rose);
+}
+
+.inv-footer {
+  padding: 4rem 1.5rem 5rem;
+  text-align: center;
+  background: #ffffff;
+  border-top: 1px solid var(--section-border);
+}
+
+.inv-footer__name {
+  margin: 0;
+  color: #d7bfff;
+}
+
+/* Lightbox detalle (título Galería + imagen grande) */
+.inv-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 4000;
+  display: flex;
+  flex-direction: column;
+  background: #141018;
+  padding: 0;
+}
+
+.inv-lightbox.hidden {
+  display: none;
+}
+
+.inv-lightbox__bar {
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 3.25rem 0.65rem;
+}
+
+.inv-lightbox__brand {
+  font-family: 'Pinyon Script', cursive;
+  font-size: clamp(1.85rem, 8vw, 2.6rem);
+  font-weight: 400;
+  color: #f5f0ff;
+  text-shadow: none;
+  pointer-events: none;
+}
+
+.inv-lightbox__close {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2.75rem;
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.65rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.95;
+}
+
+.inv-lightbox__close:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.inv-lightbox__body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.35rem 0.5rem 1.25rem;
+  min-height: 0;
+}
+
+.inv-lightbox__frame {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  max-height: calc(100vh - 5.5rem);
+}
+
+.inv-lightbox__frame img {
+  max-width: 100%;
+  max-height: calc(85vh - 4.5rem);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.inv-lightbox__nav {
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+}
+
+.inv-lightbox__nav:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+@media (max-width: 380px) {
+  .inv-lightbox__nav {
+    width: 1.85rem;
+    height: 1.85rem;
+    font-size: 1.25rem;
+  }
+}
+
+/* Agenda — línea de tiempo (iconos + hora a la derecha); mismo fondo que Ceremonia (--after-parallax) */
+.inv-section--agenda {
+  text-align: center;
+  background: #faf8fc;
+  box-shadow: none;
+}
+
+.inv-agenda__date {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(26, 26, 26, 0.52);
+  margin-top: 0.35rem;
+  margin-bottom: 2rem;
+  letter-spacing: 0.02em;
+}
+
+.inv-agenda__timeline {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  max-width: 26rem;
+  text-align: left;
+}
+
+.inv-agenda__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  position: relative;
+  padding-bottom: 1.4rem;
+}
+
+.inv-agenda__row:last-child {
+  padding-bottom: 0;
+}
+
+.inv-agenda__track {
+  position: relative;
+  width: 2.5rem;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  padding-top: 0.12rem;
+}
+
+.inv-agenda__row:not(:last-child) .inv-agenda__track::after {
+  content: '';
+  position: absolute;
+  top: 2.35rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: calc(100% + 0.5rem);
+  background: linear-gradient(
+    180deg,
+    rgba(138, 43, 226, 0.45) 0%,
+    rgba(138, 43, 226, 0.12) 100%
+  );
+  border-radius: 2px;
+}
+
+.inv-agenda__circle {
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 50%;
+  background: rgba(138, 43, 226, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.inv-agenda__circle .material-symbols-outlined {
+  font-size: 1.2rem;
+  font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+  color: var(--vibe-purple);
+  line-height: 1;
+}
+
+.inv-agenda__main {
+  flex: 1;
+  min-width: 0;
+  padding-top: 0.08rem;
+}
+
+.inv-agenda__title {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--inv-ink);
+  line-height: 1.35;
+  margin: 0;
+}
+
+.inv-agenda__sub {
+  list-style: none;
+  padding: 0;
+  margin: 0.45rem 0 0;
+}
+
+.inv-agenda__sub li {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.82rem;
+  color: rgba(26, 26, 26, 0.62);
+  line-height: 1.5;
+  padding-left: 0.65rem;
+  position: relative;
+}
+
+.inv-agenda__sub li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(138, 43, 226, 0.45);
+}
+
+.inv-agenda__time {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--vibe-purple);
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-top: 0.12rem;
+  min-width: 4.1rem;
+  text-align: right;
+}
+
+@media (max-width: 380px) {
+  .inv-agenda__row {
+    flex-wrap: wrap;
+    row-gap: 0.35rem;
+  }
+
+  .inv-agenda__time {
+    width: 100%;
+    text-align: left;
+    padding-left: 3.35rem;
+    margin-top: -0.15rem;
+    min-width: unset;
+  }
+}
+
+/* Flotantes */
+.floating-music {
+  position: fixed;
+  bottom: 1.75rem;
+  left: 1.75rem;
+  width: 3.125rem;
+  height: 3.125rem;
+  background: #ffffff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: black;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  z-index: 3000;
+  border: 2px solid var(--vibe-purple);
+  color: var(--vibe-purple);
 }
 
-/* Hide Scrollbars */
-#app::-webkit-scrollbar {
-  display: none;
+.floating-music.is-playing {
+  animation: spin-slow 8s linear infinite;
 }
-#app {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.floating-whatsapp {
+  position: fixed;
+  bottom: 1.75rem;
+  right: 1.75rem;
+  width: 3.125rem;
+  height: 3.125rem;
+  background: #25d366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  border: 2px solid #1faa52;
+  z-index: 3000;
+}
+
+/* Reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Tras “¡Sólo faltan!”: sin fade-in inicial — siempre a opacidad plena */
+.inv-cd-parallax-zone ~ .inv-section.reveal,
+.inv-cd-parallax-zone ~ footer.reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
 }

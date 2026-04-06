@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Memories Gallery - Gabriella Sofía</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8c2bee",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .masonry {
+            column-count: 2;
+            column-gap: 12px;
+        }
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 12px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark min-h-screen text-[#141118] dark:text-white">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden max-w-[430px] mx-auto shadow-2xl bg-white dark:bg-background-dark">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-20 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-[#e0dbe6] dark:border-[#352a44]">
+<div class="flex items-center p-4 justify-between h-14">
+<div class="flex size-10 shrink-0 items-center justify-start">
+<span class="material-symbols-outlined text-[#141118] dark:text-white">arrow_back_ios</span>
+</div>
+<h2 class="text-[#141118] dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-10">Memories Gallery</h2>
+</div>
+</header>
+<!-- Tabs -->
+<div class="sticky top-14 z-20 bg-white dark:bg-background-dark">
+<div class="flex border-b border-[#e0dbe6] dark:border-[#352a44] px-6 justify-between">
+<a class="flex flex-col items-center justify-center border-b-[3px] border-primary pb-3 pt-4 flex-1" href="#">
+<p class="text-primary text-sm font-bold leading-normal tracking-wide">Official</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-[#756189] dark:text-gray-400 pb-3 pt-4 flex-1" href="#">
+<p class="text-sm font-bold leading-normal tracking-wide">Guest</p>
+</a>
+</div>
+</div>
+<!-- Gallery Grid (Masonry) -->
+<main class="flex-1 p-4 mb-20">
+<div class="masonry">
+<!-- Grid Items -->
+<div class="masonry-item">
+<div class="w-full bg-center bg-no-repeat bg-cover rounded-xl shadow-sm h-64" data-alt="Gabriella Sofía in a ball gown" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCQC0-UYI8-HLHiktldGfRBJ_aYk6LOcW4sLIDDTLESSVVOHCc7h-6-r6bgLzeSCGyGUDIyVyty_Cm0YJS_mgTDB_0WmC-zsI6I2ktOcQsnBXq5XxnCzrwzugq564iGc1wke5uxBc1CZUwrWSoCuQtdzaRWtfyADYr3L8Ld3tTIEm4biSdAPLuFhkuDAoTZw6uaWhpkQdnpDv4rF81GbaEZcteiHYQFJoNhEn7L4gAEyvibeByKt2paseuqTZwP-sjMdWNMrAGEIGRU");'>
+</div>
+</div>
+<div class="masonry-item">
+<div class="w-full bg-center bg-no-repeat bg-cover rounded-xl shadow-sm h-48" data-alt="Elegant floral arrangement details" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCUStiNQZnQQhzJnVGAfn8AgzLY-odAFsgC1HopR5JrAwyW-yLxC1x07-dd0yFslw_t8pK3oosf61w6ue1KoO2EF9rr2W9YtO1H2ZCxcv7b5j5Yf4aXjYATbumadQLn7b5WwC7y_Zmz-XurSnBbPM8VWh4DmY_bRoFO1SdgiO9ObJiZXkYS4ak9OzDe3G3GQBJc5kpRTSzMl93NAbaelekNBYBeHkyV-XpQxjY5HHOPts6-_iF4k89N8sN6GoNPpiBYN09-1jJOKZlG");'>
+</div>
+</div>
+<div class="masonry-item">
+<div class="w-full bg-center bg-no-repeat bg-cover rounded-xl shadow-sm h-72" data-alt="Professional portrait of the debutante" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCoj9tu-QgdKx22wwwQ1KDUUbNG_n801cz9vxdoFpM9IuZvlatzXmUJeEZe27R5VWBA3PzyVLi0I57twag08z92jx8zXUt9rv9E6DdmdneKUvtm2TXv9os4CVD1apWZ6X6VaToWn_24SSFLjxVg3ZQE2o8ufxMZCNs1rgEytYtZ1HDf_M0kZVgFeQtbzmPu8DjH9QQzor2WkUHPhq805rptq4Yf8-ce2pbmyU9PLWwNNb7c93Ksl90wv-WVdIdVmqdDB23p8tvAdPXc");'>
+</div>
+</div>
+<div class="masonry-item">
+<div class="w-full bg-center bg-no-repeat bg-cover rounded-xl shadow-sm h-40" data-alt="Luxury invitation and event stationery" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCI73ICyUYZBo8AlGppZdC7dvbDWhXhP5TA84vvugFmkUlsMjijkEyQsS3QTZ9RELsMV0xs_1qk5Owdb5lY0wvqmvb0nrvcqKuyO9l_npkhLnBAzu1qt6nZdYgtRaC2-IyUb3S8xLh5y3PfznnQYEJDRR6T6tqB1EtYM3WD2dDG8JQJNdNuxRam1pFCh1vzsc0RcmO5_wRV781MYdq0JuulbBY4wwMZFxjhXDZLkX_llcje5004D2GWmEhaubjP9BZMTE2XPynOQe5p");'>
+</div>
+</div>
+<div class="masonry-item">
+<div class="w-full bg-center bg-no-repeat bg-cover rounded-xl shadow-sm h-56" data-alt="Sparkling chandelier at the venue" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCPgg1CgfjrNjI_mBOg3iUl7wgiG-lQ8IggEnE8ZnYQkZVdqiGHjNkQZ7DQke_aVQQWRQRJitljG9Pqr24t-qlxY53WlTPECZv5kg7mDBX5tnMn0O1SLe3eGkqCaJ_qlA0yB7ukFvBUrAYyI9yJpe2g72tkYzr7ct-ImZ2fqFY3FCM-sXJ4w23CTUtFsm47vSe9UZ3bOqU5zL9bvlQVjBoLPUTKAq_U9HSkgJPGwDIDVqecnxGQwAe0J4XK-T37X-Ga4Hs40t-tsBz0");'>
+</div>
+</div>
+<div class="masonry-item">
+<div class="w-full bg-center bg-no-repeat bg-cover rounded-xl shadow-sm h-64" data-alt="Outdoor photo shoot garden setting" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD2Txea8PH58JweJuGySzExHggWXJGtrMaPEWRAu_01sUYnT2D1I-cNxzOy4yZ14IvG0VB-GO9bL9jZUUuDEr7DqK_5KsAy0e5FyLmFOwBs1EuEFApaHAGO53VjzwzT7INNh-KNwEwZ2bru53MvZWQOzAp113jWaxYgPmBFXRJf8HgpHNuroWPVNhpE_SLBzcOasWveoNQ4FiDZKxcdVT_Ks3dhqtYraB4E5DM7LooZC63grxl7-CDUo0nXQiMZ4oXgcB0jCIFwnM0w");'>
+</div>
+</div>
+<div class="masonry-item">
+<div class="w-full bg-center bg-no-repeat bg-cover rounded-xl shadow-sm h-48" data-alt="Close up of a tiered cake" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBurs6ckW3mCMA-usWh9nbfyLhlTsdClcP2dnNO2D9RYBg-aTFJug__t2WFfkVnzKqaiFdnyNHZ1PnqgVisuT8UTC8bbn6F9zJNE95S4r0IB3KsH9u2wGABu9zkghUUrnlAGFWrp6qeMZOI0I12GAhmZPK58mziHF-j_r0hrjGivLhkO_QwbuM3JMYOGG00cOZbfk3TD_FRIefT0OV2Cu2mH6YIO6NqVPZybT4F0kbUcmVnDkBR5PZum0gQg8pQQVqgkHiNzpx3RgFm");'>
+</div>
+</div>
+<div class="masonry-item">
+<div class="w-full bg-center bg-no-repeat bg-cover rounded-xl shadow-sm h-80" data-alt="Gabriella Sofía dancing under lights" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDNtR63NJAK5moWn4PxuZJQ2cW1AXZKFMY6ym4b3KvGH9T1BA5PdaD3qWRfzw7Tq29HIQOezqETL5Cx1daa3Z_4VCCxrdeFBh4RJn23curp7TWM2Ifk3fRJWMNMDDNaRcI8h2QIPZfwWby80_K5UZwxhi0g9W0Y5utu3lFJQApSiXyCYBipy1O65hE0J88lbMooRs2DbaExp9_7Ol_N6QJjntOW_DvnkqRne8Gi__0cfu0LTUZCoMN9iiHj0Awa3F9WGfsja-UIO8XE");'>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB -->
+<div class="fixed bottom-24 right-6 z-30">
+<button class="flex items-center justify-center rounded-full size-16 bg-primary text-white shadow-lg shadow-primary/40 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-3xl">add_a_photo</span>
+</button>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full max-w-[430px] border-t border-[#f2f0f4] dark:border-[#352a44] bg-white/90 dark:bg-background-dark/90 backdrop-blur-md px-4 pb-6 pt-3 z-20">
+<div class="flex gap-2 justify-between">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-[#756189] dark:text-gray-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-[10px] font-medium leading-normal tracking-wide">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-[#756189] dark:text-gray-400" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<p class="text-[10px] font-medium leading-normal tracking-wide">Schedule</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">gallery_thumbnail</span>
+<p class="text-[10px] font-bold leading-normal tracking-wide">Gallery</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-[#756189] dark:text-gray-400" href="#">
+<span class="material-symbols-outlined">qr_code_2</span>
+<p class="text-[10px] font-medium leading-normal tracking-wide">RSVP</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-[#756189] dark:text-gray-400" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-[10px] font-medium leading-normal tracking-wide">More</p>
+</a>
+</div>
+</nav>
+<!-- Safety bottom spacer -->
+<div class="h-20 bg-white dark:bg-background-dark"></div>
+</div>
+</body></html>

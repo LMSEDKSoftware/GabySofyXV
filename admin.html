@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- API Node: en hosting solo estático pon aquí la URL pública completa, ej. https://api.tudominio.com/api -->
+  <meta name="xv-api-base" content="/api" />
+  <title>Panel Admin — XV</title>
+  <style>
+    :root {
+      --bg: #f4f2f8;
+      --surface: #ffffff;
+      --border: #e2dde8;
+      --text: #1a1a1a;
+      --muted: #5c5568;
+      --accent: #6f3cc8;
+      --accent-hover: #5b32a8;
+      --secondary-bg: #ece8f2;
+      --secondary-border: #d4cce0;
+    }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      min-height: 100vh;
+    }
+    .wrap { max-width: 1080px; margin: 40px auto; padding: 0 16px; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(26, 26, 26, 0.06);
+    }
+    h1, h2 { margin: 0 0 12px; font-weight: 700; }
+    h1 { font-size: 1.5rem; color: var(--text); }
+    h2 { font-size: 1.1rem; color: var(--text); }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    input, button {
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      padding: 10px 12px;
+    }
+    input { min-width: 220px; }
+    input:focus { outline: 2px solid rgba(111, 60, 200, 0.35); outline-offset: 1px; }
+    button {
+      cursor: pointer;
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 600;
+    }
+    button:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+    button.secondary {
+      background: var(--secondary-bg);
+      border-color: var(--secondary-border);
+      color: var(--text);
+    }
+    button.secondary:hover { background: #e0d8ea; border-color: #c9bdd6; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .ok { color: #0d7a3e; font-weight: 600; }
+    .err { color: #b42318; font-weight: 600; }
+    .guests-table-wrap {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    table.guests-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 14px;
+    }
+    .guests-table thead th {
+      text-align: left;
+      padding: 12px 14px;
+      background: linear-gradient(180deg, #f3f0f8 0%, #ece8f2 100%);
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .guests-table tbody td {
+      padding: 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .guests-table tbody tr:last-child td { border-bottom: none; }
+    .guests-table tbody tr {
+      transition: background 0.2s ease;
+    }
+    .guests-table tbody tr:hover { background: #faf9fc; }
+    .guests-table tbody tr.row-copied {
+      background: #e8f5e9;
+      box-shadow: inset 4px 0 0 #2e7d32;
+    }
+    .td-send-id {
+      width: 1%;
+      text-align: center;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      color: var(--accent);
+      font-size: 15px;
+    }
+    .td-phone { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 13px; }
+    .td-num { text-align: center; font-weight: 700; color: var(--accent); }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .badge--pending { background: #fff4e0; color: #a65f00; }
+    .badge--confirmed { background: #e3f2e4; color: #1b5e20; }
+    .badge--declined { background: #fdecea; color: #b71c1c; }
+    .badge--unknown { background: #eceff1; color: #546e7a; }
+    .hidden { display: none; }
+    code {
+      background: #ede9f5;
+      color: #3d2f5c;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+    .msg-card {
+      min-width: min(100%, 320px);
+      max-width: 520px;
+      background: linear-gradient(165deg, #faf8ff 0%, #ffffff 55%);
+      border: 1px solid #e0d8f0;
+      border-radius: 12px;
+      padding: 14px 16px 12px;
+      box-shadow: 0 1px 2px rgba(111, 60, 200, 0.06);
+    }
+    .msg-body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      font-size: 14px;
+      line-height: 1.65;
+      color: #2a2438;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .msg-actions { margin-top: 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .msg-empty {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin: 0;
+      max-width: 28rem;
+    }
+    .btn-mini {
+      padding: 8px 14px;
+      font-size: 13px;
+      border-radius: 10px;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    }
+    .btn-mini:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+    .btn-mini:active { transform: scale(0.98); }
+    .btn-mini.btn-copied {
+      background: #2e7d32;
+      border-color: #2e7d32;
+      color: #fff;
+    }
+    .td-link { white-space: nowrap; vertical-align: middle; }
+    a.btn-link-open {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 14px;
+      font-size: 13px;
+      border-radius: 10px;
+      border: 1px solid var(--secondary-border);
+      background: var(--secondary-bg);
+      color: var(--text);
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    a.btn-link-open:hover {
+      background: #e0d8ea;
+      border-color: #c9bdd6;
+      color: var(--text);
+    }
+    #links_out {
+      background: #faf9fc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 12px;
+      color: var(--muted);
+      max-height: 220px;
+      overflow: auto;
+      margin: 0;
+    }
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+    .section-label {
+      margin: 20px 0 10px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .section-label:first-of-type { margin-top: 0; }
+    .section-hint {
+      margin: 0 0 12px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+      max-width: 42rem;
+    }
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 18px 0;
+    }
+    details.json-details {
+      margin-top: 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #faf9fc;
+    }
+    details.json-details summary {
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      user-select: none;
+    }
+    details.json-details[open] summary { margin-bottom: 10px; }
+    .status-line { margin-top: 16px; min-height: 1.25em; }
+
+    .wizard-step {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      margin-bottom: 8px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+    }
+    .wizard-step:last-of-type {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .step-badge {
+      flex-shrink: 0;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, var(--accent) 0%, #5a2db0 100%);
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(111, 60, 200, 0.28);
+    }
+    .step-badge.step-badge--done {
+      background: linear-gradient(145deg, #2e7d32 0%, #1b5e20 100%);
+      font-size: 1.1rem;
+      box-shadow: 0 4px 12px rgba(46, 125, 50, 0.25);
+    }
+    .step-body { flex: 1; min-width: 0; }
+    .step-title { margin: 0 0 6px; font-size: 1.15rem; font-weight: 700; color: var(--text); }
+    .step-desc { margin: 0 0 14px; font-size: 14px; color: var(--muted); line-height: 1.55; max-width: 40rem; }
+
+    .dropzone {
+      border: 2px dashed #c4b8dc;
+      border-radius: 16px;
+      padding: 36px 24px;
+      text-align: center;
+      background: linear-gradient(180deg, #faf8ff 0%, #f5f2fb 100%);
+      transition: border-color 0.2s, background 0.2s, transform 0.15s;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .dropzone:hover { border-color: #9b87c9; background: #f3effa; }
+    .dropzone.is-dragover {
+      border-color: var(--accent);
+      border-style: solid;
+      background: #ede6f7;
+      transform: scale(1.01);
+    }
+    .dropzone.has-file {
+      border-style: solid;
+      border-color: #a894d4;
+      background: #fff;
+    }
+    .dropzone__icon { font-size: 2.25rem; margin-bottom: 10px; line-height: 1; }
+    .dropzone__title { font-weight: 700; font-size: 15px; margin-bottom: 6px; color: var(--text); }
+    .dropzone__hint { font-size: 13px; color: var(--muted); margin: 0; }
+
+    .file-preview {
+      margin-top: 16px;
+      padding: 16px 18px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #faf9fc;
+      display: none;
+    }
+    .file-preview.is-visible { display: block; }
+    .file-preview__name { font-weight: 700; font-size: 15px; word-break: break-all; color: var(--text); }
+    .file-preview__meta { font-size: 13px; color: var(--muted); margin-top: 6px; }
+    .file-preview__note { font-size: 13px; color: var(--muted); margin-top: 12px; line-height: 1.5; }
+
+    .btn-confirm-load {
+      margin-top: 16px;
+      padding: 12px 24px;
+      font-size: 15px;
+      border-radius: 12px;
+      display: none;
+    }
+    .btn-confirm-load.is-visible { display: inline-flex; align-items: center; gap: 8px; }
+
+    .guests-step-head {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .guests-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .guests-toolbar-hint {
+      margin: 0 0 14px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+      max-width: 44rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Panel Admin</h1>
+    <p class="muted">Dos pasos: <strong>1)</strong> sube tu Excel y confirma la carga — se crean solos el enlace y el mensaje de cada invitado. <strong>2)</strong> revisa la tabla, abre invitaciones si quieres comprobar datos y copia los textos para enviarlos.</p>
+
+    <section class="card" id="login_card">
+      <h2>Acceso</h2>
+      <div class="row">
+        <input id="username" placeholder="Usuario" autocomplete="username" />
+        <input id="password" type="password" placeholder="Password" autocomplete="current-password" />
+        <button id="btn_login">Entrar</button>
+      </div>
+      <p id="login_msg" class="muted"></p>
+    </section>
+
+    <section class="card hidden" id="admin_card">
+      <div class="admin-header">
+        <h2 style="margin:0;">Cargar invitados</h2>
+        <button class="secondary" type="button" id="btn_logout">Cerrar sesión</button>
+      </div>
+
+      <input type="file" id="excel_file_input" class="hidden" accept=".xlsx,.xls,.csv" tabindex="-1" aria-hidden="true" />
+
+      <div class="wizard-step" id="step1_row">
+        <div class="step-badge" id="step1_badge" aria-hidden="true">1</div>
+        <div class="step-body">
+          <h3 class="step-title">Sube la lista de invitados</h3>
+          <p class="step-desc">
+            La plantilla solo tiene tres columnas: <strong>nombre</strong>, <strong>telefono</strong> y <strong>pases</strong> (teléfono: 10 dígitos, sin +52). Descárgala de nuevo o edita el ejemplo.
+            Luego arrastra el archivo aquí o haz clic en la zona. Revisa la vista previa y confirma: se guardan los datos, el enlace personal y el mensaje de WhatsApp de cada fila. La lista aparece abajo en el paso 2.
+          </p>
+          <div class="row">
+            <button class="secondary" type="button" id="btn_template">Descargar plantilla Excel</button>
+          </div>
+          <div
+            class="dropzone"
+            id="dropzone"
+            role="button"
+            tabindex="0"
+            aria-label="Zona para arrastrar archivo Excel o CSV. También puedes hacer clic para elegir archivo."
+          >
+            <div class="dropzone__icon" aria-hidden="true">📄</div>
+            <p class="dropzone__title">Arrastra tu archivo aquí</p>
+            <p class="dropzone__hint">o haz clic para elegir · .xlsx, .xls o .csv</p>
+          </div>
+          <div class="file-preview" id="file_preview" aria-live="polite">
+            <div class="file-preview__name" id="preview_name"></div>
+            <div class="file-preview__meta" id="preview_meta"></div>
+            <p class="file-preview__note">
+              Al pulsar <strong>Confirmar carga</strong> se importan las filas con <strong>nombre</strong> y <strong>telefono</strong> válidos; <strong>pases</strong> son los lugares aprobados. Si vuelves a subir el mismo u otro archivo, se actualizan datos, enlaces y mensajes. Corrige el Excel y vuelve a cargar cuando lo necesites.
+            </p>
+          </div>
+          <button type="button" class="btn-confirm-load" id="btn_confirm_upload">Confirmar carga</button>
+        </div>
+      </div>
+
+      <p id="admin_msg" class="status-line muted"></p>
+
+      <details class="json-details">
+        <summary>Ver respuesta JSON (opcional)</summary>
+        <pre id="links_out" class="muted" style="white-space: pre-wrap;"></pre>
+      </details>
+    </section>
+
+    <section class="card hidden" id="guests_card">
+      <div class="guests-step-head">
+        <div class="step-badge">2</div>
+        <div class="step-body" style="margin:0;">
+          <h2 style="margin:0 0 6px;">Tu lista de invitados</h2>
+          <p class="muted" style="margin:0;">Aquí <strong>administras y supervisas</strong> a cada invitado: nombre, teléfono, pases y el <strong>estado de la invitación</strong> (pendiente, confirmado o declinado) cuando respondan en su enlace. El <strong>ID</strong> es el número de fila (1, 2, 3…) para ubicarlos al enviar mensajes. <strong>Abrir invitación</strong> te permite comprobar que la página muestre los datos correctos; <strong>Copiar</strong> pone en el portapapeles el texto de WhatsApp ya generado al cargar el Excel.</p>
+        </div>
+      </div>
+      <div class="guests-toolbar">
+        <button class="secondary" type="button" id="btn_refresh">Actualizar lista</button>
+        <button type="button" id="btn_generate_messages">Regenerar mensajes y enlaces</button>
+      </div>
+      <p class="guests-toolbar-hint"><strong>Actualizar lista</strong> trae los últimos datos desde la base (por si cambiaste algo fuera del panel). <strong>Regenerar mensajes y enlaces</strong> solo hace falta si quieres nuevos tokens o actualizar el texto para todos (por ejemplo, si cambió la fecha o el mensaje base del evento).</p>
+      <div class="guests-table-wrap">
+        <table class="guests-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Teléfono</th>
+              <th>Pases</th>
+              <th>Estado</th>
+              <th>Link</th>
+              <th>Mensaje para enviar</th>
+            </tr>
+          </thead>
+          <tbody id="guests_tbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const API_BASE = (() => {
+      if (location.protocol === 'file:') return 'http://127.0.0.1:3001/api';
+      const m = document.querySelector('meta[name="xv-api-base"]');
+      let raw = m && m.content ? m.content.trim() : '';
+      if (!raw) raw = '/api';
+      raw = raw.replace(/\/$/, '');
+      if (raw.startsWith('http://') || raw.startsWith('https://')) return raw;
+      if (raw.startsWith('/')) return `${location.origin}${raw}`;
+      return `${location.origin}/${raw}`;
+    })();
+    const KEY = 'xv_admin_bearer';
+
+    const $ = (id) => document.getElementById(id);
+    const setMsg = (id, text, ok = true) => {
+      const el = $(id);
+      el.textContent = text || '';
+      const prefix = id === 'admin_msg' ? 'status-line ' : '';
+      el.className = prefix + (ok ? 'ok' : 'err');
+    };
+    const getToken = () => localStorage.getItem(KEY) || '';
+    const setToken = (v) => localStorage.setItem(KEY, v);
+    const clearToken = () => localStorage.removeItem(KEY);
+    let pendingUploadFile = null;
+
+    const dropzone = $('dropzone');
+    const fileInput = $('excel_file_input');
+    const filePreview = $('file_preview');
+    const previewName = $('preview_name');
+    const previewMeta = $('preview_meta');
+    const btnConfirmUpload = $('btn_confirm_upload');
+    const step1Badge = $('step1_badge');
+
+    function formatBytes(n) {
+      if (n < 1024) return `${n} B`;
+      if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
+      return `${(n / (1024 * 1024)).toFixed(1)} MB`;
+    }
+
+    function setStep1BadgeDone(done) {
+      if (done) {
+        step1Badge.textContent = '✓';
+        step1Badge.classList.add('step-badge--done');
+      } else {
+        step1Badge.textContent = '1';
+        step1Badge.classList.remove('step-badge--done');
+      }
+    }
+
+    function clearUploadStaging() {
+      pendingUploadFile = null;
+      fileInput.value = '';
+      dropzone.classList.remove('has-file');
+      filePreview.classList.remove('is-visible');
+      btnConfirmUpload.classList.remove('is-visible');
+      previewName.textContent = '';
+      previewMeta.textContent = '';
+    }
+
+    function stageFile(file) {
+      if (!file) return;
+      const okExt = /\.(xlsx|xls|csv)$/i.test(file.name);
+      if (!okExt) {
+        setMsg('admin_msg', 'Elige un archivo .xlsx, .xls o .csv', false);
+        return;
+      }
+      pendingUploadFile = file;
+      setStep1BadgeDone(false);
+      dropzone.classList.add('has-file');
+      previewName.textContent = file.name;
+      const kind = /\.csv$/i.test(file.name) ? 'CSV' : 'Excel';
+      previewMeta.textContent = `${kind} · ${formatBytes(file.size)}`;
+      filePreview.classList.add('is-visible');
+      btnConfirmUpload.classList.add('is-visible');
+      setMsg('admin_msg', 'Revisa la vista previa y pulsa Confirmar carga cuando esté listo.', true);
+    }
+
+    async function copyText(text) {
+      await navigator.clipboard.writeText(text);
+    }
+
+    function badgeForStatus(status) {
+      const raw = String(status || '').toLowerCase();
+      const key = raw === 'pending' || raw === 'confirmed' || raw === 'declined' ? raw : 'unknown';
+      const labels = { pending: 'Pendiente', confirmed: 'Confirmado', declined: 'Declinado', unknown: status || '—' };
+      const label = key === 'unknown' ? labels.unknown : labels[key];
+      const span = document.createElement('span');
+      span.className = `badge badge--${key}`;
+      span.textContent = label;
+      return span;
+    }
+
+    async function api(path, opts = {}) {
+      const token = getToken();
+      const headers = Object.assign({ Accept: 'application/json' }, opts.headers || {});
+      if (token) headers.Authorization = `Bearer ${token}`;
+      const res = await fetch(`${API_BASE}${path}`, Object.assign({}, opts, { headers }));
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Error de API');
+      return data;
+    }
+
+    async function refreshGuests() {
+      const data = await api('/admin/guests');
+      const rows = data.guests || [];
+      const tbody = $('guests_tbody');
+      tbody.innerHTML = '';
+      rows.forEach((g, index) => {
+        const tr = document.createElement('tr');
+        tr.dataset.guestId = g.id;
+
+        const tdId = document.createElement('td');
+        tdId.className = 'td-send-id';
+        tdId.textContent = String(index + 1);
+
+        const tdName = document.createElement('td');
+        tdName.textContent = g.full_name || '';
+
+        const tdPhone = document.createElement('td');
+        tdPhone.className = 'td-phone';
+        tdPhone.textContent = g.phone_e164 || '';
+
+        const tdPasses = document.createElement('td');
+        tdPasses.className = 'td-num';
+        tdPasses.textContent = g.approved_seats != null ? String(g.approved_seats) : '—';
+
+        const tdStatus = document.createElement('td');
+        tdStatus.className = 'td-status';
+        tdStatus.appendChild(badgeForStatus(g.attendance_status));
+
+        const tdLink = document.createElement('td');
+        tdLink.className = 'td-link';
+        const inviteUrl = String(g.personal_invite_url || '').trim();
+        if (inviteUrl) {
+          const a = document.createElement('a');
+          a.className = 'btn-link-open';
+          a.href = inviteUrl;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.textContent = 'Abrir invitación';
+          tdLink.appendChild(a);
+        } else {
+          const s = document.createElement('span');
+          s.className = 'muted';
+          s.textContent = '—';
+          tdLink.appendChild(s);
+        }
+
+        const tdMsg = document.createElement('td');
+        tdMsg.className = 'td-msg';
+        const savedMsg = String(g.invitation_message ?? '').trim();
+        if (savedMsg) {
+          const card = document.createElement('div');
+          card.className = 'msg-card';
+          const body = document.createElement('div');
+          body.className = 'msg-body';
+          body.textContent = savedMsg;
+          const actions = document.createElement('div');
+          actions.className = 'msg-actions';
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'btn-mini btn-copy-msg';
+          btn.textContent = 'Copiar';
+          actions.appendChild(btn);
+          card.appendChild(body);
+          card.appendChild(actions);
+          tdMsg.appendChild(card);
+        } else {
+          const p = document.createElement('p');
+          p.className = 'msg-empty';
+          p.textContent = 'Sin mensaje guardado. Importa de nuevo desde el paso 1 o usa «Regenerar mensajes y enlaces» encima de la tabla.';
+          tdMsg.appendChild(p);
+        }
+
+        tr.appendChild(tdId);
+        tr.appendChild(tdName);
+        tr.appendChild(tdPhone);
+        tr.appendChild(tdPasses);
+        tr.appendChild(tdStatus);
+        tr.appendChild(tdLink);
+        tr.appendChild(tdMsg);
+        tbody.appendChild(tr);
+      });
+
+      tbody.querySelectorAll('.btn-copy-msg').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const tr = btn.closest('tr');
+          const body = tr?.querySelector('.msg-body');
+          const text = body ? String(body.textContent || '').trim() : '';
+          try {
+            if (!text) throw new Error('No hay mensaje para copiar');
+            await copyText(text);
+            tbody.querySelectorAll('tr').forEach((r) => r.classList.remove('row-copied'));
+            if (tr) tr.classList.add('row-copied');
+            btn.textContent = 'Copiado';
+            btn.classList.add('btn-copied');
+            setTimeout(() => {
+              btn.textContent = 'Copiar';
+              btn.classList.remove('btn-copied');
+            }, 2200);
+            setMsg('admin_msg', 'Información copiada', true);
+          } catch (e) {
+            setMsg('admin_msg', e.message || 'No se pudo copiar', false);
+          }
+        });
+      });
+      $('guests_card').classList.remove('hidden');
+      setMsg('admin_msg', `Invitados cargados: ${rows.length}`, true);
+    }
+
+    async function generateFinalMessages() {
+      const data = await api('/admin/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ regenerate: true })
+      });
+      await refreshGuests();
+      setMsg('admin_msg', `Mensajes y enlaces regenerados para ${data.total} invitado(s).`, true);
+      $('links_out').textContent = JSON.stringify(data.messages || [], null, 2);
+    }
+
+    async function bootSession() {
+      const token = getToken();
+      if (!token) return;
+      try {
+        await api('/admin/me');
+        $('login_card').classList.add('hidden');
+        $('admin_card').classList.remove('hidden');
+        await refreshGuests();
+      } catch {
+        clearToken();
+      }
+    }
+
+    $('btn_login').addEventListener('click', async () => {
+      try {
+        const username = $('username').value.trim();
+        const password = $('password').value;
+        const data = await fetch(`${API_BASE}/admin/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ username, password })
+        }).then(async (r) => {
+          const j = await r.json().catch(() => ({}));
+          if (!r.ok) throw new Error(j.error || 'Login inválido');
+          return j;
+        });
+        setToken(data.token);
+        $('login_card').classList.add('hidden');
+        $('admin_card').classList.remove('hidden');
+        setMsg('login_msg', '');
+        await refreshGuests();
+      } catch (e) {
+        setMsg('login_msg', e.message, false);
+      }
+    });
+
+    $('btn_logout').addEventListener('click', () => {
+      clearToken();
+      location.reload();
+    });
+
+    dropzone.addEventListener('click', () => fileInput.click());
+
+    dropzone.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        fileInput.click();
+      }
+    });
+
+    ['dragenter', 'dragover'].forEach((ev) => {
+      dropzone.addEventListener(ev, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.add('is-dragover');
+      });
+    });
+    ['dragleave', 'drop'].forEach((ev) => {
+      dropzone.addEventListener(ev, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.remove('is-dragover');
+      });
+    });
+    dropzone.addEventListener('drop', (e) => {
+      const f = e.dataTransfer?.files?.[0];
+      if (f) stageFile(f);
+    });
+
+    fileInput.addEventListener('change', () => {
+      const f = fileInput.files?.[0];
+      if (f) stageFile(f);
+    });
+
+    btnConfirmUpload.addEventListener('click', async () => {
+      try {
+        const f = pendingUploadFile;
+        if (!f) throw new Error('Primero elige un archivo en el paso 1');
+        const fd = new FormData();
+        fd.append('file', f);
+        const token = getToken();
+        const res = await fetch(`${API_BASE}/admin/import-guests`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: fd
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Error al importar el archivo');
+        const imported = data.count;
+        setStep1BadgeDone(true);
+        clearUploadStaging();
+        await refreshGuests();
+        setMsg(
+          'admin_msg',
+          `Carga confirmada: ${imported} fila(s). Enlaces y mensajes generados automáticamente. Revisa la lista en el paso 2.`,
+          true
+        );
+      } catch (e) {
+        setMsg('admin_msg', e.message, false);
+      }
+    });
+
+    $('btn_template').addEventListener('click', async () => {
+      try {
+        const token = getToken();
+        const res = await fetch(`${API_BASE}/admin/template.xlsx`, {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || 'No se pudo descargar template');
+        }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'template-invitados-xv.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        setMsg('admin_msg', 'Template descargado correctamente', true);
+      } catch (e) {
+        setMsg('admin_msg', e.message, false);
+      }
+    });
+
+    $('btn_refresh').addEventListener('click', async () => {
+      try {
+        await refreshGuests();
+      } catch (e) {
+        setMsg('admin_msg', e.message, false);
+      }
+    });
+
+    $('btn_generate_messages').addEventListener('click', async () => {
+      try {
+        await generateFinalMessages();
+      } catch (e) {
+        setMsg('admin_msg', e.message, false);
+      }
+    });
+
+    bootSession();
+  </script>
+</body>
+</html>

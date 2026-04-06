@@ -522,20 +522,20 @@ header p { font-size: 13px; color: var(--text-light); margin-top: 2px; }
     <div class="lane">
       <div class="node sistema" onclick="showTip('loginscreen')">
         <div class="node-num">10</div><br>
-        Muestra pantalla de acceso
-        <div class="node-sub">Campos: número WhatsApp + código del evento</div>
+        Muestra bienvenida personalizada + asistentes aprobados
+        <div class="node-sub">Cada invitado entra con su link único (sin código de acceso)</div>
       </div>
     </div>
     <div class="lane"></div>
     <div class="lane">
-      <div class="node invitado" onclick="showTip('enter')">
-        <div class="node-num">11</div><br>
-        Ingresa su número de WhatsApp y el código
-        <div class="node-sub">El número es el mismo al que llegó el mensaje</div>
+      <div class="node invitado" onclick="showTip('tap')">
+        <div class="node-num">•</div><br>
+        Invitado abre su link único
+        <div class="node-sub">Acceso directo a su invitación personalizada</div>
       </div>
       <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-      <div class="node invitado" onclick="showTip('submit')">
-        Pulsa "Entrar"
+      <div class="node invitado" onclick="showTip('welcome')">
+        Ve su pantalla personalizada
       </div>
     </div>
   </div>
@@ -543,13 +543,10 @@ header p { font-size: 13px; color: var(--text-light); margin-top: 2px; }
   <div class="swimlane-container">
     <div class="lane"></div>
     <div class="lane">
-      <div class="node sistema" onclick="showTip('validate')">
-        <div class="node-num">12</div><br>
-        Valida: ¿número existe en DB + código correcto?
-      </div>
-      <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-      <div class="node decision sistema" onclick="showTip('match')">
-        ¿Coincide?
+      <div class="node sistema" onclick="showTip('session')">
+        <div class="node-num">11</div><br>
+        Si el link es válido, crea sesión del invitado
+        <div class="node-sub">Token guardado en dispositivo · ingreso automático en futuras visitas</div>
       </div>
     </div>
     <div class="lane"></div>
@@ -560,24 +557,12 @@ header p { font-size: 13px; color: var(--text-light); margin-top: 2px; }
   <div class="swimlane-container">
     <div class="lane"></div>
     <div class="lane">
-      <div class="arrow no"><div class="arrow-label">NO (3 intentos → bloqueo temporal)</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
-      <div class="node sistema" onclick="showTip('blocked')">
-        Muestra mensaje de error
-        <div class="node-sub">Sugiere revisar número o contactar al admin</div>
-      </div>
+      <div style="height:52px"></div>
     </div>
     <div class="lane">
-      <div class="arrow yes"><div class="arrow-label">SÍ</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
-      <div class="node sistema" onclick="showTip('session')">
-        <div class="node-num">13</div><br>
-        Crea sesión del invitado
-        <div class="node-sub">Token guardado en dispositivo · no necesita volver a entrar</div>
-      </div>
-      <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
       <div class="node invitado" onclick="showTip('welcome')">
-        <div class="node-num">14</div><br>
-        Ve su pantalla personalizada
-        <div class="node-sub">Nombre · lugares asignados · secciones de la app</div>
+        Pantalla lista para confirmar RSVP
+        <div class="node-sub">Nombre personalizado · asistentes aprobados por admin</div>
       </div>
     </div>
     <div class="lane"></div>
@@ -596,9 +581,9 @@ header p { font-size: 13px; color: var(--text-light); margin-top: 2px; }
     <div class="lane"></div>
     <div class="lane">
       <div class="node invitado" onclick="showTip('rsvpform')">
-        <div class="node-num">15</div><br>
-        Confirma asistencia
-        <div class="node-sub">Selecciona cuántos de sus lugares va a usar + preferencias alimentarias</div>
+        <div class="node-num">12</div><br>
+        Confirma/rechaza asistencia + nota para la Quinceañera
+        <div class="node-sub">La nota de felicitación es opcional</div>
       </div>
       <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
       <div class="node decision invitado" onclick="showTip('rsvpdec')">
@@ -612,13 +597,13 @@ header p { font-size: 13px; color: var(--text-light); margin-top: 2px; }
     <div class="lane">
       <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
       <div class="node sistema" onclick="showTip('update')">
-        <div class="node-num">16</div><br>
+        <div class="node-num">13</div><br>
         Actualiza registro en DB
-        <div class="node-sub">Estado: confirmado / no asiste · lugares confirmados · dieta</div>
+        <div class="node-sub">Estado: confirmado/no asiste · asistentes confirmados · nota</div>
       </div>
       <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
       <div class="node whatsapp" onclick="showTip('ack')">
-        <div class="node-num">17</div><br>
+        <div class="node-num">14</div><br>
         Envía confirmación por WhatsApp/email al invitado
         <div class="node-sub">"¡Te esperamos!" o "Gracias por avisarnos"</div>
       </div>
@@ -641,21 +626,21 @@ header p { font-size: 13px; color: var(--text-light); margin-top: 2px; }
   <div class="swimlane-container">
     <div class="lane">
       <div class="node admin" onclick="showTip('dashboard')">
-        <div class="node-num">18</div><br>
+        <div class="node-num">15</div><br>
         Consulta panel de control
         <div class="node-sub">En tiempo real</div>
       </div>
       <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
       <div class="node admin" onclick="showTip('reminder')">
-        <div class="node-num">19</div><br>
+        <div class="node-num">16</div><br>
         Envía recordatorios a pendientes
         <div class="node-sub">Filtra por estado "sin respuesta" y reenvía</div>
       </div>
       <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
       <div class="node admin" onclick="showTip('export')">
-        <div class="node-num">20</div><br>
+        <div class="node-num">17</div><br>
         Exporta lista final
-        <div class="node-sub">Excel con confirmados, lugares totales, dietas especiales</div>
+        <div class="node-sub">Excel con confirmados, asistentes y notas</div>
       </div>
       <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
       <div class="node end" onclick="showTip('fin')">FIN — Evento listo ✓</div>
@@ -687,7 +672,7 @@ header p { font-size: 13px; color: var(--text-light); margin-top: 2px; }
 <div class="notes-panel">
   <div class="note-card">
     <h3>🔐 Seguridad del acceso</h3>
-    <p>El número de WhatsApp actúa como identificador único. El código general es la segunda capa. Aunque alguien comparta el código, sin el número registrado no puede entrar. 3 intentos fallidos → bloqueo de 10 min.</p>
+    <p>El acceso se hace con link único por invitado (token firmado/expirable). No se pide código manual en pantalla. Si un link expira o se invalida, el admin puede regenerarlo y reenviarlo.</p>
   </div>
   <div class="note-card green">
     <h3>📨 Lista de Difusión WhatsApp</h3>
@@ -736,21 +721,21 @@ const tips = {
   fallback:   { title:'7b. Fallback por Email', body:'Si el mensaje de WhatsApp falló Y el invitado tiene email registrado, el sistema envía automáticamente un correo con el mismo link y código. El email tiene diseño de la invitación con botón CTA "Ver mi invitación".', tag:'Sistema', color:'#3B82F6' },
   received:   { title:'8. Invitado recibe la invitación', body:'El mensaje llega al WhatsApp personal del invitado (o a su email como fallback). Contiene un saludo con su nombre, el link de la app y el código del evento.', tag:'WhatsApp', color:'#15803D' },
   tap:        { title:'9. El invitado toca el link', body:'El link abre la app/web en el navegador del teléfono. Si el link incluye el número como parámetro, el campo ya aparece pre-llenado, facilitando el acceso.', tag:'Invitado', color:'#C2410C' },
-  loginscreen:{ title:'10. Pantalla de acceso', body:'La app muestra dos campos: ① Número de WhatsApp (el mismo al que llegó el mensaje) y ② Código del evento (el código general enviado en la invitación, ej. GABY15).', tag:'Sistema', color:'#3B82F6' },
-  enter:      { title:'11. El invitado ingresa sus datos', body:'Escribe su número de WhatsApp con código de país. Escribe el código del evento. Este número actúa como su identificador único en el sistema.', tag:'Invitado', color:'#C2410C' },
-  submit:     { title:'Pulsa "Entrar"', body:'El formulario envía los datos al sistema para validación. El botón muestra un spinner mientras procesa.', tag:'Invitado', color:'#C2410C' },
-  validate:   { title:'12. Validación de acceso', body:'El sistema busca el número en la base de datos Y verifica que el código del evento sea correcto. Ambas condiciones deben cumplirse. Si el número no está en la DB = no invitado. Si el código es incorrecto = error de código.', tag:'Sistema', color:'#3B82F6' },
-  match:      { title:'¿Coincide?', body:'SÍ: número en DB + código correcto → acceso concedido.\nNO: cualquiera de los dos falla → mensaje de error específico. Después de 3 intentos fallidos, el sistema bloquea ese número por 10 minutos para evitar fuerza bruta.', tag:'Decisión', color:'#6B7280' },
-  blocked:    { title:'Error de acceso', body:'El mensaje de error indica si el problema es el número ("No encontramos tu número, ¿lo ingresaste con código de país?") o el código ("Código incorrecto, revisa el mensaje que recibiste"). Se sugiere contactar al organizador si persiste.', tag:'Sistema', color:'#3B82F6' },
-  session:    { title:'13. Sesión creada', body:'Se genera un token de sesión guardado en el dispositivo (localStorage). Esto significa que el invitado no necesita volver a ingresar sus datos si regresa a la app más tarde desde el mismo dispositivo.', tag:'Sistema', color:'#3B82F6' },
-  welcome:    { title:'14. Pantalla personalizada del invitado', body:'El invitado ve: su nombre en el encabezado, cuántos lugares tiene asignados, el estado actual de su confirmación, y acceso a todas las secciones: Agenda, Galería, Libro de Invitados, Merch.', tag:'Invitado', color:'#C2410C' },
-  rsvpform:   { title:'15. Formulario de confirmación', body:'El invitado ve sus lugares asignados (ej. "Tienes 3 lugares reservados"). Puede indicar cuántos usará realmente. Puede marcar preferencias alimentarias. Puede dejar una nota.', tag:'Invitado', color:'#C2410C' },
+  loginscreen:{ title:'10. Bienvenida personalizada', body:'Al abrir su link único, el sistema muestra una pantalla de bienvenida con el nombre del invitado y el número de asistentes aprobados por admin. Ya no se solicita código de acceso.', tag:'Sistema', color:'#3B82F6' },
+  enter:      { title:'Acceso por link único', body:'Cada invitado entra con su URL personalizada. El enlace identifica al invitado y evita capturar número/código manualmente.', tag:'Invitado', color:'#C2410C' },
+  submit:     { title:'Ingreso automático', body:'Al abrir el enlace válido, la app carga la experiencia personalizada sin formulario de acceso.', tag:'Invitado', color:'#C2410C' },
+  validate:   { title:'Validación de enlace', body:'El sistema valida firma/expiración del link y que el invitado exista en la base de datos.', tag:'Sistema', color:'#3B82F6' },
+  match:      { title:'¿Link válido?', body:'Si es válido, se concede acceso inmediato y se crea sesión. Si no, se muestra un mensaje para contactar al admin y regenerar enlace.', tag:'Decisión', color:'#6B7280' },
+  blocked:    { title:'Link inválido o expirado', body:'El sistema muestra error de acceso por enlace inválido/expirado y sugiere solicitar un nuevo link al organizador.', tag:'Sistema', color:'#3B82F6' },
+  session:    { title:'11. Sesión creada', body:'Si el link es válido, se genera token de sesión en el dispositivo para mantener el acceso en visitas posteriores.', tag:'Sistema', color:'#3B82F6' },
+  welcome:    { title:'Pantalla personalizada del invitado', body:'El invitado ve su nombre, asistentes aprobados por admin y acceso al RSVP + secciones de la invitación.', tag:'Invitado', color:'#C2410C' },
+  rsvpform:   { title:'12. Confirmación RSVP', body:'El invitado confirma o rechaza asistencia y puede dejar una nota de felicitación para la quinceañera (opcional).', tag:'Invitado', color:'#C2410C' },
   rsvpdec:    { title:'¿Asiste?', body:'El invitado elige "Confirmo asistencia" o "No podré asistir". En ambos casos el sistema registra la respuesta y envía un acuse de recibo por WhatsApp/email.', tag:'Decisión', color:'#6B7280' },
-  update:     { title:'16. Actualización en DB', body:'El registro del invitado se actualiza: estado (confirmado/no asiste), número de lugares que usará, preferencias alimentarias, timestamp de confirmación.', tag:'Sistema', color:'#3B82F6' },
-  ack:        { title:'17. Acuse de recibo automático', body:'Si confirmó: "¡Perfecto [Nombre]! Tu asistencia está confirmada. Te esperamos el 12 de octubre 🎉"\nSi declinó: "Gracias por avisarnos [Nombre]. ¡Que disfrutes el día!"', tag:'WhatsApp', color:'#15803D' },
-  dashboard:  { title:'18. Panel de control admin', body:'Vista en tiempo real con: contador total de invitados, confirmados (verde), pendientes (amarillo), declinados (gris). Tabla con cada invitado y su estado. Filtros por estado. Buscador por nombre.', tag:'Admin', color:'#7B2FBE' },
-  reminder:   { title:'19. Recordatorio a pendientes', body:'El admin filtra por "sin respuesta" y con un clic envía un recordatorio personalizado por WhatsApp. El sistema espera automáticamente X días antes de sugerir reenviar.', tag:'Admin', color:'#7B2FBE' },
-  export:     { title:'20. Exportar lista final', body:'El admin descarga un Excel con: nombre, estado, lugares confirmados, preferencias alimentarias, fecha de confirmación. Útil para dar al salón/catering.', tag:'Admin', color:'#7B2FBE' },
+  update:     { title:'13. Actualización en DB', body:'Se actualiza el registro del invitado: estado (confirmado/no asiste), asistentes confirmados y nota de felicitación (si existe).', tag:'Sistema', color:'#3B82F6' },
+  ack:        { title:'14. Acuse automático', body:'El sistema envía confirmación por WhatsApp/email: mensaje de agradecimiento y estado final de su RSVP.', tag:'WhatsApp', color:'#15803D' },
+  dashboard:  { title:'15. Panel de control admin', body:'Vista en tiempo real con total invitados, confirmados, pendientes y declinados; además de asistentes confirmados y notas registradas.', tag:'Admin', color:'#7B2FBE' },
+  reminder:   { title:'16. Recordatorios a pendientes', body:'El admin filtra pendientes y reenvía recordatorios por lote o por invitado.', tag:'Admin', color:'#7B2FBE' },
+  export:     { title:'17. Exportar lista final', body:'Descarga Excel final con estado RSVP, asistentes confirmados y notas de felicitación para operación del evento.', tag:'Admin', color:'#7B2FBE' },
   metrics:    { title:'Métricas del sistema', body:'Dashboard en tiempo real: Total invitados cargados / Mensajes entregados / Invitados que accedieron / Confirmados / Declinados / Pendientes / Total lugares confirmados / Dietas especiales', tag:'Sistema', color:'#3B82F6' },
   explore:    { title:'El invitado explora la app', body:'Después de confirmar, el invitado puede ver la Agenda del evento, ver la Galería de fotos, escribir en el Libro de Invitados, y escanear su QR de regalo (Merch). Puede volver a la app en cualquier momento desde el mismo link.', tag:'Invitado', color:'#C2410C' },
   fin:        { title:'FIN — Evento listo', body:'El admin tiene la lista completa de confirmados, lugares totales y necesidades especiales. Todo listo para coordinar con el salón y el catering.', tag:'✓ Completado', color:'#22C55E' },

@@ -3,44 +3,508 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XV Gabriella Sofía — The Event</title>
-    
-    <!-- Fonts -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <!-- Base URL del API (backend). Vacío = solo confirmación por WhatsApp en el cliente. Ej: http://localhost:3001/api -->
+    <meta name="xv-api-base" content="/api">
+    <title>Invitación — Gabriella Sofía</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Caveat:wght@700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-    
-    <!-- Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet">
-    
-    <!-- Core Styles -->
-    <link rel="stylesheet" href="css/style.css">
-    
-    <!-- Tailwind Play CDN -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Caveat:wght@700&family=Space+Grotesk:wght@500;700&family=Pinyon+Script&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#FF3366",
-                        "secondary": "#00F5FF",
-                        "vibe-purple": "#8A2BE2",
-                        "neon-lime": "#CCFF00",
+                        primary: '#FF3366',
+                        secondary: '#00F5FF',
+                        'vibe-purple': '#8A2BE2',
+                        'neon-lime': '#CCFF00',
+                        'background-light': '#FAFAFA',
+                        'bg-page': '#F8F7FF',
+                        inv: {
+                            rose: '#FF3366',
+                            ink: '#1A1A1A',
+                            gold: '#8A2BE2',
+                            blush: '#FAFAFA',
+                        },
                     },
                     fontFamily: {
-                        "sans": ["Plus Jakarta Sans", "sans-serif"],
-                        "accent": ["Caveat", "cursive"],
-                        "display": ["Space Grotesk", "sans-serif"]
+                        sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+                        accent: ['Caveat', 'cursive'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                        serif: ['Cormorant Garamond', 'Georgia', 'serif'],
+                        script: ['Great Vibes', 'cursive'],
+                        pinyon: ['Pinyon Script', 'cursive'],
                     }
-                },
-            },
-        }
+                }
+            }
+        };
     </script>
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="mobile-first">
-    <div id="app"></div>
-    
-    <!-- Logic -->
-    <script type="module" src="js/app.js"></script>
+<body class="inv-body font-sans text-[#1A1A1A] antialiased">
+    <script>
+      window.__INV_ASSET_V = Date.now();
+      window.addEventListener('pageshow', function (e) {
+        if (e.persisted) location.reload();
+      });
+    </script>
+    <audio id="bg_music" loop preload="metadata">
+        <source src="assets/music/bg.mp3" type="audio/mpeg">
+    </audio>
+
+    <button type="button" id="music_player" class="floating-music" aria-label="Música de fondo">
+        <span class="material-symbols-outlined">music_note</span>
+    </button>
+
+    <a href="https://wa.me/528131361132" target="_blank" rel="noopener noreferrer" class="floating-whatsapp" aria-label="WhatsApp">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="#fff" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.881 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </a>
+
+    <main id="app">
+        <section class="inv-hero-parallax-zone" id="inv_hero_zone" aria-label="Portada">
+            <div class="inv-hero-parallax-layers" id="inv_hero_layers">
+                <div class="inv-hero-parallax-bg">
+                    <img
+                        src="assets/img/img2.jpg"
+                        alt=""
+                        class="inv-hero-parallax-img"
+                        id="inv_hero_img"
+                        width="1200"
+                        height="1600"
+                    />
+                </div>
+            </div>
+            <div class="inv-hero-parallax-track" id="inv_hero_track">
+                <div class="inv-hero-parallax-flow">
+                    <div class="inv-hero-parallax-stage">
+                        <div class="inv-hero__top">
+                            <div class="inv-hero__fifteen" aria-hidden="true">
+                                <span class="inv-hero__num">1</span>
+                                <span class="inv-hero__num">5</span>
+                            </div>
+                            <p class="inv-hero__anos tracking-[0.35em]">Años</p>
+                        </div>
+                        <div class="inv-hero__bottom">
+                            <div class="inv-hero__title-box">
+                                <div class="inv-sofia-logo inv-sofia-logo--hero" aria-hidden="true">
+                                    <div class="inv-sofia-logo__parallax" id="inv_sofia_logo_hero">
+                                        <div class="inv-sofia-logo__shell">
+                                            <span class="inv-sofia-logo__float">
+                                                <img
+                                                    class="inv-sofia-logo__img"
+                                                    src="assets/img/Logotipo/1.png"
+                                                    alt=""
+                                                    width="512"
+                                                    height="512"
+                                                    decoding="async"
+                                                />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h1 class="inv-hero__name font-script">
+                                    <span class="inv-hero__name-line">Gabriella</span>
+                                    <span class="inv-hero__name-line">Sofía</span>
+                                </h1>
+                                <p class="inv-hero__date">08 &nbsp;-&nbsp; MAYO &nbsp;-&nbsp; 2026</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inv-hero-parallax-scroll-pad" aria-hidden="true"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="inv-section inv-section--yolo-surface inv-section--glass-bisel reveal">
+            <p class="inv-text inv-text--lead max-w-md mx-auto">
+                Dios ha sido mi guía en este camino, y quiero compartir contigo la alegría de cumplir mis XV años. Cada momento ha sido un regalo; hoy celebro mi vida con amor y gratitud.
+            </p>
+            <h2 class="inv-kicker mt-14">Invitación válida para</h2>
+            <p id="guest_name" class="inv-guest-name font-serif italic text-3xl md:text-4xl text-inv-rose mt-4">Nombre del invitado</p>
+            <div class="inv-passes mt-8">
+                <span id="guest_passes" class="inv-passes__n">2</span>
+                <span class="inv-passes__label">pases disponibles</span>
+            </div>
+            <p class="inv-text mt-10 max-w-sm mx-auto">Me hará muy feliz que me acompañes en este día tan especial.</p>
+        </section>
+
+        <section class="inv-section inv-section--blush reveal">
+            <p class="inv-text max-w-md mx-auto">
+                Hace 15 años Dios me regaló la vida y una gran familia, acompáñanos a festejar juntos mi cumpleaños <strong>#XV</strong>
+            </p>
+            <h2 class="inv-kicker mt-10">Mis papás</h2>
+            <p class="inv-names font-serif text-2xl md:text-3xl text-inv-rose mt-6">Mónica Gabriella Correa Flores</p>
+            <p class="inv-ampersand font-script text-4xl text-inv-gold my-2">&amp;</p>
+            <p class="inv-names font-serif text-2xl md:text-3xl text-inv-rose">Iván Fernández Almaguer</p>
+        </section>
+
+        <div class="inv-cd-parallax-zone" id="inv_cd_zone">
+            <div class="inv-cd-parallax-layers" id="inv_cd_layers">
+                <div class="inv-cd-parallax-bg">
+                    <img
+                        src="assets/img/img3.jpg"
+                        alt=""
+                        class="inv-cd-parallax-img"
+                        id="inv_cd_img"
+                        width="1200"
+                        height="1600"
+                        decoding="async"
+                    />
+                </div>
+                <div class="inv-cd-parallax-scrim" aria-hidden="true"></div>
+            </div>
+            <div class="inv-cd-parallax-track" id="inv_cd_track">
+                <div class="inv-cd-parallax-flow">
+                    <div class="inv-cd-parallax-card-wrap">
+                        <div class="inv-countdown-card inv-cd-parallax-card-inner">
+                            <p class="inv-countdown-card__title">¡Sólo faltan!</p>
+                            <div class="inv-countdown inv-countdown--boxed" id="countdown">
+                                <div class="inv-countdown__item">
+                                    <span id="cd-days" class="inv-countdown__val">00</span>
+                                    <span class="inv-countdown__lbl">Días</span>
+                                </div>
+                                <div class="inv-countdown__item">
+                                    <span id="cd-hours" class="inv-countdown__val">00</span>
+                                    <span class="inv-countdown__lbl">Horas</span>
+                                </div>
+                                <div class="inv-countdown__item">
+                                    <span id="cd-mins" class="inv-countdown__val">00</span>
+                                    <span class="inv-countdown__lbl">Minutos</span>
+                                </div>
+                                <div class="inv-countdown__item">
+                                    <span id="cd-secs" class="inv-countdown__val">00</span>
+                                    <span class="inv-countdown__lbl">Segundos</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="inv-section inv-section--after-parallax reveal">
+            <h2 class="inv-title-pinyon text-vibe-purple">Ceremonia</h2>
+            <div class="inv-venue-visual">
+                <img
+                    src="assets/img/catedral.png"
+                    alt="Fachada de la Catedral de Monterrey"
+                    width="1200"
+                    height="900"
+                    loading="lazy"
+                    decoding="async"
+                />
+            </div>
+            <p class="inv-venue-sub font-sans font-medium text-primary mt-8">Catedral de Monterrey</p>
+            <p class="inv-text mt-6">Viernes, 08 de Mayo de 2026.</p>
+            <p class="inv-text font-semibold mt-2">5:30 pm.</p>
+            <p class="inv-text text-sm text-black/60 mt-4 max-w-xs mx-auto leading-relaxed">
+                Centro, Monterrey, Nuevo León.
+            </p>
+            <a href="https://maps.google.com/?q=Catedral+de+Monterrey" target="_blank" rel="noopener noreferrer" class="inv-btn mt-8">Abrir mapa</a>
+        </section>
+
+        <section class="inv-section inv-section--blush reveal">
+            <h2 class="inv-title-pinyon text-vibe-purple">Recepción</h2>
+            <div class="inv-venue-visual">
+                <img
+                    src="assets/img/las_lomas.png"
+                    alt="Fachada de Las Lomas Eventos y Convenciones"
+                    width="1200"
+                    height="900"
+                    loading="lazy"
+                    decoding="async"
+                />
+            </div>
+            <p class="inv-venue-sub font-sans font-medium text-primary mt-8">Las Lomas Eventos y Convenciones</p>
+            <p class="inv-text mt-6">Viernes, 08 de Mayo de 2026.</p>
+            <p class="inv-text font-semibold mt-2">7:30 pm.</p>
+            <p class="inv-text text-sm text-black/60 mt-4 max-w-sm mx-auto leading-relaxed">
+                Av. Ignacio Morones Prieto 2808, Monterrey, Nuevo León.
+            </p>
+            <a href="https://maps.app.goo.gl/xwHmCSVZ1tNnt1GE8" target="_blank" rel="noopener noreferrer" class="inv-btn mt-8">Abrir mapa</a>
+        </section>
+
+        <section class="inv-section inv-section--agenda reveal" id="agenda" aria-labelledby="agenda-heading">
+            <h2 id="agenda-heading" class="inv-title-pinyon text-vibe-purple">Agenda</h2>
+            <p class="inv-agenda__date">Viernes, 8 de mayo de 2026</p>
+            <ol class="inv-agenda__timeline">
+                <li class="inv-agenda__row">
+                    <div class="inv-agenda__track">
+                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">church</span></span>
+                    </div>
+                    <div class="inv-agenda__main">
+                        <h3 class="inv-agenda__title">Ceremonia</h3>
+                    </div>
+                    <time class="inv-agenda__time" datetime="2026-05-08T17:30">5:30 pm</time>
+                </li>
+                <li class="inv-agenda__row">
+                    <div class="inv-agenda__track">
+                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">waving_hand</span></span>
+                    </div>
+                    <div class="inv-agenda__main">
+                        <h3 class="inv-agenda__title">Apertura / Bienvenida</h3>
+                    </div>
+                    <time class="inv-agenda__time" datetime="2026-05-08T19:30">7:30 pm</time>
+                </li>
+                <li class="inv-agenda__row">
+                    <div class="inv-agenda__track">
+                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">restaurant_menu</span></span>
+                    </div>
+                    <div class="inv-agenda__main">
+                        <h3 class="inv-agenda__title">Inicio servicio</h3>
+                    </div>
+                    <time class="inv-agenda__time" datetime="2026-05-08T20:00">8:00 pm</time>
+                </li>
+                <li class="inv-agenda__row">
+                    <div class="inv-agenda__track">
+                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">auto_awesome</span></span>
+                    </div>
+                    <div class="inv-agenda__main">
+                        <h3 class="inv-agenda__title">Presentación XV</h3>
+                        <ul class="inv-agenda__sub">
+                            <li>Vals papá</li>
+                            <li>Vals damas y chambelanes</li>
+                            <li>Vals XV Rosas</li>
+                        </ul>
+                    </div>
+                    <time class="inv-agenda__time" datetime="2026-05-08T20:10">8:10 pm</time>
+                </li>
+                <li class="inv-agenda__row">
+                    <div class="inv-agenda__track">
+                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">restaurant</span></span>
+                    </div>
+                    <div class="inv-agenda__main">
+                        <h3 class="inv-agenda__title">Servicio cena <span class="font-normal text-black/55">(fotoclip)</span></h3>
+                    </div>
+                    <time class="inv-agenda__time" datetime="2026-05-08T20:45">8:45 pm</time>
+                </li>
+                <li class="inv-agenda__row">
+                    <div class="inv-agenda__track">
+                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">mic</span></span>
+                    </div>
+                    <div class="inv-agenda__main">
+                        <h3 class="inv-agenda__title">Presentación Tercera llamada</h3>
+                    </div>
+                    <time class="inv-agenda__time" datetime="2026-05-08T21:00">9:00 pm</time>
+                </li>
+                <li class="inv-agenda__row">
+                    <div class="inv-agenda__track">
+                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">celebration</span></span>
+                    </div>
+                    <div class="inv-agenda__main">
+                        <h3 class="inv-agenda__title">Baile Mix <span class="font-normal text-black/55">(XV + Damas + chambelanes)</span></h3>
+                        <ul class="inv-agenda__sub">
+                            <li>Regalo sorpresa</li>
+                        </ul>
+                    </div>
+                    <time class="inv-agenda__time" datetime="2026-05-08T21:50">9:50 pm</time>
+                </li>
+                <li class="inv-agenda__row">
+                    <div class="inv-agenda__track">
+                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">graphic_eq</span></span>
+                    </div>
+                    <div class="inv-agenda__main">
+                        <h3 class="inv-agenda__title">DJ Brown</h3>
+                    </div>
+                    <time class="inv-agenda__time" datetime="2026-05-08T22:00">10:00 pm</time>
+                </li>
+                <li class="inv-agenda__row">
+                    <div class="inv-agenda__track">
+                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">nightlife</span></span>
+                    </div>
+                    <div class="inv-agenda__main">
+                        <h3 class="inv-agenda__title">Arranca baile</h3>
+                    </div>
+                    <time class="inv-agenda__time" datetime="2026-05-08T23:00">11:00 pm</time>
+                </li>
+                <li class="inv-agenda__row">
+                    <div class="inv-agenda__track">
+                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">cake</span></span>
+                    </div>
+                    <div class="inv-agenda__main">
+                        <h3 class="inv-agenda__title">Pastel</h3>
+                    </div>
+                    <time class="inv-agenda__time" datetime="2026-05-08T23:30">11:30 pm</time>
+                </li>
+                <li class="inv-agenda__row">
+                    <div class="inv-agenda__track">
+                        <span class="inv-agenda__circle" aria-hidden="true"><span class="material-symbols-outlined">event_available</span></span>
+                    </div>
+                    <div class="inv-agenda__main">
+                        <h3 class="inv-agenda__title">Finaliza servicio</h3>
+                    </div>
+                    <time class="inv-agenda__time" datetime="2026-05-09T01:00">1:00 am</time>
+                </li>
+            </ol>
+        </section>
+
+        <section class="inv-section reveal">
+            <h2 class="inv-title-pinyon text-vibe-purple">Dress code</h2>
+            <p class="inv-text mt-8 max-w-md mx-auto leading-relaxed text-center">
+                No vestir de colores: <strong>morado o lila</strong>,<br> están reservados para la festejada.
+            </p>
+            <p class="inv-text mt-6 max-w-md mx-auto leading-relaxed">
+                Jóvenes: <strong>ALL BLACK</strong> formal
+            </p>
+        </section>
+
+        <section class="inv-section inv-section--blush reveal">
+            <h2 class="inv-title-pinyon text-vibe-purple">Galería</h2>
+            <p class="inv-text mt-6 max-w-md mx-auto text-center">Después de momentos magníficos, sólo quedan recuerdos inolvidables.</p>
+            <div class="inv-gallery-slider mt-12" id="gallery_slider">
+                <div
+                    class="inv-gallery-slider__viewport"
+                    id="gallery_viewport"
+                    tabindex="0"
+                    role="region"
+                    aria-roledescription="carrusel"
+                    aria-label="Fotos de la galería. Desliza horizontalmente."
+                ></div>
+                <div
+                    class="inv-gallery-slider__dots"
+                    id="gallery_dots"
+                    role="group"
+                    aria-label="Indicador de fotos"
+                ></div>
+            </div>
+        </section>
+
+        <div class="inv-mr-parallax-zone" id="inv_mr_zone">
+            <div class="inv-mr-parallax-layers" id="inv_mr_layers">
+                <div class="inv-mr-parallax-bg">
+                    <img
+                        src="assets/img/oficial_gallery/final/parallax-mis-recuerdos.jpg"
+                        alt=""
+                        class="inv-mr-parallax-img"
+                        id="inv_mr_img"
+                        width="1280"
+                        height="848"
+                        decoding="async"
+                    />
+                </div>
+                <div class="inv-mr-parallax-scrim" aria-hidden="true"></div>
+            </div>
+            <div class="inv-mr-parallax-track" id="inv_mr_track">
+                <div class="inv-mr-parallax-flow">
+                    <div class="inv-mr-parallax-stage">
+                        <div class="inv-mr-parallax-glass">
+                            <h2 class="inv-title-pinyon inv-mr-parallax-glass__title">Mis recuerdos</h2>
+                            <p class="inv-mr-parallax-glass__lead">
+                                No olvides etiquetarme en todas tus publicaciones usando mi hashtag
+                            </p>
+                            <p class="inv-mr-parallax-glass__hashtag">#GabySofyXV</p>
+                        </div>
+                    </div>
+                    <div class="inv-mr-parallax-scroll-pad" aria-hidden="true"></div>
+                </div>
+            </div>
+        </div>
+
+        <section class="inv-section inv-section--blush reveal">
+            <h2 class="inv-title-pinyon text-vibe-purple">Regalos</h2>
+            <p class="inv-text mt-6 max-w-md mx-auto">
+                Si no tienes tiempo o no sabes qué regalarme, te comparto algunas ideas…
+            </p>
+
+            <div class="inv-gift-options mt-10 max-w-md mx-auto flex flex-col gap-8 text-left">
+                <div class="inv-card inv-gift-options__card">
+                    <div class="inv-gift-options__head">
+                        <span class="material-symbols-outlined inv-gift-options__icon" aria-hidden="true">redeem</span>
+                        <p class="inv-gift-options__label">Mesa de regalos</p>
+                    </div>
+                    <p class="inv-text mt-4">Lista de regalos Amazon:</p>
+                    <a
+                        href="https://www.amazon.com.mx/registries/gl/guest-view/1EXAHRGJXCRZY?ref_=cm_sw_r_apin_ggr-subnav-share_K9X6X9RCKB14H60RCM41&amp;language=en-US"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="inv-btn inv-btn--ghost mt-5 w-full text-center"
+                    >Ver lista en Amazon</a>
+                </div>
+
+                <div class="inv-card inv-gift-options__card">
+                    <div class="inv-gift-options__head inv-gift-options__head--sobre">
+                        <span class="material-symbols-outlined inv-gift-options__icon" aria-hidden="true">mail</span>
+                        <span class="material-symbols-outlined inv-gift-options__icon" aria-hidden="true">credit_card</span>
+                        <p class="inv-gift-options__label">Sobre</p>
+                    </div>
+                    <p class="inv-text mt-4 text-sm">
+                        Si lo deseas, podrás entregar tu sobre el día del evento o usar transferencia a la siguiente tarjeta:
+                    </p>
+                    <p class="inv-text mt-4 text-sm leading-relaxed">
+                        <strong>Tarjeta Bancomer</strong> a nombre de <strong>Gabriella Sofía Fernández Correa</strong>:
+                    </p>
+                    <p class="inv-gift-options__card-num mt-2 font-mono text-base md:text-lg tracking-widest text-inv-ink" translate="no">4152 3143 9848 1443</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="inv-section reveal" id="confirmacion">
+            <h2 class="inv-title-pinyon text-vibe-purple">Confirmación</h2>
+            <p class="inv-text mt-6 max-w-md mx-auto text-center">Es muy importante para nosotros contar con tu confirmación lo antes posible.</p>
+            <h3 class="font-semibold mt-12 text-lg">¿Asistirás a mi fiesta?</h3>
+            <div class="flex gap-4 justify-center mt-6 flex-wrap">
+                <label class="inv-radio">
+                    <input type="radio" name="asistencia" value="si" checked>
+                    <span>Asistiré</span>
+                </label>
+                <label class="inv-radio">
+                    <input type="radio" name="asistencia" value="no">
+                    <span>No asistiré</span>
+                </label>
+            </div>
+            <div id="rsvp_extra" class="mt-10 max-w-sm mx-auto text-left space-y-6">
+                <div>
+                    <label class="inv-label" for="rsvp_personas_fixed">Personas confirmadas</label>
+                    <div id="rsvp_personas_fixed" class="inv-input" aria-live="polite">2</div>
+                </div>
+                <div>
+                    <label class="inv-label" for="rsvp_msg">¡Déjame un mensaje!</label>
+                    <textarea id="rsvp_msg" class="inv-input inv-input--area" rows="3" placeholder="Unas palabras para la festejada…"></textarea>
+                </div>
+                <button type="button" id="rsvp_submit_v4" class="inv-btn inv-btn--wide w-full">Enviar</button>
+            </div>
+            <p class="inv-text mt-10 text-sm">
+                WhatsApp: <a href="https://wa.me/528131361132" class="inv-link">81 3136 1132</a>
+            </p>
+        </section>
+
+        <footer class="inv-footer reveal">
+            <div class="inv-sofia-logo inv-sofia-logo--footer">
+                <span class="inv-sofia-logo__float">
+                    <img
+                        class="inv-sofia-logo__img"
+                        src="assets/img/Logotipo/1.png"
+                        alt="Logotipo de Sofía"
+                        width="512"
+                        height="512"
+                        decoding="async"
+                    />
+                </span>
+            </div>
+            <p class="inv-footer__name font-script text-4xl">Gabriella Sofía</p>
+            <p class="text-[10px] uppercase tracking-[0.4em] text-black/40 mt-8">XV años · Monterrey 2026</p>
+        </footer>
+    </main>
+
+    <div id="lightbox" class="inv-lightbox inv-lightbox--detail hidden" role="dialog" aria-modal="true" aria-label="Detalle de foto">
+        <header class="inv-lightbox__bar">
+            <span class="inv-lightbox__brand" id="lightbox_title">Galería</span>
+            <button type="button" class="inv-lightbox__close" id="lightbox_close" aria-label="Cerrar">&times;</button>
+        </header>
+        <div class="inv-lightbox__body" id="lightbox_body">
+            <button type="button" class="inv-lightbox__nav inv-lightbox__nav--prev" id="lightbox_prev" aria-label="Foto anterior">‹</button>
+            <div class="inv-lightbox__frame">
+                <img id="lightbox_img" src="" alt="">
+            </div>
+            <button type="button" class="inv-lightbox__nav inv-lightbox__nav--next" id="lightbox_next" aria-label="Foto siguiente">›</button>
+        </div>
+    </div>
+
+    <script src="js/app.js" defer></script>
 </body>
 </html>

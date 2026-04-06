@@ -1,14 +1,11 @@
-# Manual de Operación: SPA XV Gabriella Sofía
+# Manual de Operación: XV Gabriella Sofía
 
-Esta aplicación es una **Landing Page / SPA Modular** construida en Vanilla JavaScript, diseñada para ser rápida, segura y estéticamente premium.
+**Sitio principal:** `index.html` — invitación tipo 4 (parallax, galería, RSVP). Opcionalmente conecta a un API en Node (`server/`) para correo (Resend), WhatsApp (Twilio) y registro de confirmaciones.
+
+**App interactiva anterior** (pestañas, juego, etc.): abre `evento_interactivo.html` (usa `css/evento-app.css` y `js/app-router.js`).
 
 ## 🔑 Acceso de Invitados
-Para entrar a la aplicación, los invitados deben usar:
-- **Teléfono**: 10 dígitos (ej. `5512345678`)
-- **Código**: `GABY15`
-
-> [!TIP]
-> Puedes agregar más teléfonos permitidos editando el archivo `js/utils/auth.js`.
+El flujo actual usa **link único por invitado** (`?t=...`), validado por backend en `GET /api/guest/session`.
 
 ## 📂 Organización del Código
 - `js/screens/`: Contiene cada página de la app. Para agregar una sección nueva, crea un archivo aquí y regístralo en `js/app.js`.
@@ -21,19 +18,14 @@ Esta app es estática (HTML/JS/CSS). Para desplegarla:
 2. Conecta tu cuenta de **Vercel** a ese repositorio.
 3. Vercel detectará automáticamente que es un sitio estático y le asignará una URL.
 
-## 📧 Integración con Resend
-Para habilitar el envío de correos cuando alguien confirme en el RSVP:
-1. Crea una cuenta en [Resend.com](https://resend.com).
-2. Deberás crear un endpoint (en Vercel Functions o un servidor PHP/Node).
-3. En `js/screens/RSVP.js`, sustituye la lógica del botón por una llamada a tu API.
-
-Ejemplo de llamada API:
-```javascript
-fetch('/api/send-email', {
-  method: 'POST',
-  body: JSON.stringify({ to: 'admin@email.com', body: 'Nuevo RSVP de ' + phone })
-});
-```
+## API + Resend + Twilio + Excel
+1. En `server/`: `cp .env.example .env`, completa variables y `npm install && npm start`.
+2. En `index.html`, meta `xv-api-base`: por ejemplo `http://localhost:3001/api` (mismo origen en producción vía proxy o URL pública).
+3. RSVP: el front hace `POST .../rsvp`; si falla o el meta está vacío, se abre WhatsApp como antes.
+4. Panel admin seguro: abre `admin.html`, inicia sesión con `ADMIN_USERNAME` + `ADMIN_PASSWORD`, y sube Excel desde ahí.
+5. Importación de invitados: `POST /api/admin/import-guests` con sesión Bearer (o `x-admin-token` legado).
+6. Generación de links únicos: `POST /api/admin/generate-links`.
+7. Envío batch (Twilio): `POST /api/admin/send-invitations` (admite `dryRun`).
 
 ## 🎮 Gaby Crush
 El juego es funcional. Puedes ajustar la dificultad (número de colores) o el tamaño del tablero en el constructor de `js/screens/Game.js`.

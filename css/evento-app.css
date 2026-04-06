@@ -1,0 +1,206 @@
+:root {
+  /* HSL Tailored Colors */
+  --primary-h: 345;
+  --primary-s: 100%;
+  --primary-l: 61%; /* #FF3366 */
+  --primary: hsl(var(--primary-h), var(--primary-s), var(--primary-l));
+  
+  --secondary: #00F5FF;
+  --vibe-purple: #8A2BE2;
+  --neon-lime: #CCFF00;
+  
+  --bg-page: #F8F7FF;
+  --white: #FFFFFF;
+  --black: #1A1A1A;
+  --gray-light: #F3F4F6;
+  --gray-mid: #9CA3AF;
+  --gray-dark: #374151;
+  
+  /* Glassmorphism */
+  --glass: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  
+  /* Gradients */
+  --yolo-gradient: linear-gradient(180deg, #FF9EAA 0%, #E2C7FF 40%, #A2FFD6 100%);
+  --premium-purple: linear-gradient(135deg, #7B2FBE 0%, #5B1F9A 100%);
+  
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 40px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--black);
+  background: var(--bg-page);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  overflow-x: hidden;
+}
+
+/* Base Layout (Mobile First Container) */
+#app {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+  position: relative;
+  background: var(--white);
+  box-shadow: 0 0 40px rgba(0,0,0,0.1);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch; /* Smooth scroll for iOS */
+}
+
+/* Utilities */
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.yolo-bg {
+  background: var(--yolo-gradient);
+}
+
+.tilt-left { transform: rotate(-3deg); }
+.tilt-right { transform: rotate(2deg); }
+
+/* Animation: App Screen Transition */
+@keyframes slideIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.screen-animate {
+  animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Shared Components Styles */
+.top-bar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  max-width: 430px;
+  padding: 16px 24px;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  padding: 12px 24px 24px;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+}
+
+.screen {
+  padding-bottom: 120px; /* Seguridad para el menú fijo */
+  min-height: 100vh;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--gray-mid);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nav-item.active {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.nav-item .material-symbols-outlined {
+  font-size: 24px;
+}
+
+.nav-item span:last-child {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Form Styles */
+.input-premium {
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--gray-light);
+  font-family: inherit;
+  font-size: 16px;
+  transition: all 0.3s;
+  outline: none;
+}
+
+.input-premium:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.1);
+}
+
+.btn-premium {
+  width: 100%;
+  padding: 18px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--black);
+  color: white;
+  font-weight: 800;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-premium:active {
+  transform: scale(0.98);
+}
+
+.btn-bubble {
+  width: 40px;
+  height: 40px;
+  background: var(--neon-lime);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+}
+
+/* Hide Scrollbars */
+#app::-webkit-scrollbar {
+  display: none;
+}
+#app {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
