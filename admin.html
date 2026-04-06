@@ -697,7 +697,18 @@
           body: JSON.stringify({ username, password })
         }).then(async (r) => {
           const j = await r.json().catch(() => ({}));
-          if (!r.ok) throw new Error(j.error || 'Login inválido');
+          if (!r.ok) {
+            const err = j.error;
+            const msg =
+              typeof err === 'string'
+                ? err
+                : err && typeof err.message === 'string'
+                  ? err.message
+                  : r.status === 404
+                    ? 'API no disponible (404). Revisa despliegue en Vercel y variables de entorno.'
+                    : 'Login inválido';
+            throw new Error(msg);
+          }
           return j;
         });
         setToken(data.token);

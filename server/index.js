@@ -541,11 +541,15 @@ app.get('/admin', (_req, res) => {
   res.redirect(302, '/admin.html');
 });
 
+export default app;
+
 const port = Number(process.env.PORT || 3001);
-app.listen(port, () => {
-  const base = `http://127.0.0.1:${port}`;
-  console.log(`Invitación: ${base}/`);
-  console.log(`Admin:      ${base}/admin.html`);
-  console.log(`API health: ${base}/api/health`);
-  console.log(`Usa FRONTEND_BASE_URL=${base} en .env para links de WhatsApp.`);
-});
+if (process.env.VERCEL !== '1') {
+  app.listen(port, () => {
+    const base = `http://127.0.0.1:${port}`;
+    console.log(`Invitación: ${base}/`);
+    console.log(`Admin:      ${base}/admin.html`);
+    console.log(`API health: ${base}/api/health`);
+    console.log(`Usa FRONTEND_BASE_URL=${base} en .env para links de WhatsApp.`);
+  });
+}
