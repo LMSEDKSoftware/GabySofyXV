@@ -481,10 +481,10 @@
                     scope="col"
                     class="th-sortable px-4 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider whitespace-nowrap"
                     data-sort="msg_len"
-                    title="Ordenar por longitud del mensaje"
+                    title="Texto de invitación (WhatsApp) y mensaje del invitado para la quinceañera (RSVP)"
                     tabindex="0"
                   >
-                    Mensaje<span class="sort-ind" aria-hidden="true"></span>
+                    Mensajes<span class="sort-ind" aria-hidden="true"></span>
                   </th>
                 </tr>
               </thead>
@@ -771,8 +771,8 @@
             vb = String(b.personal_invite_url || '').trim() ? 1 : 0;
             return mul * (va - vb);
           case 'msg_len':
-            va = String(a.invitation_message || '').length;
-            vb = String(b.invitation_message || '').length;
+            va = String(a.invitation_message || '').length + String(a.rsvp_note || '').length;
+            vb = String(b.invitation_message || '').length + String(b.rsvp_note || '').length;
             return mul * (va - vb);
           default:
             return 0;
@@ -928,13 +928,38 @@
           const tdMsg = document.createElement('td');
           tdMsg.className = 'td-msg px-4 py-4 max-w-[min(100vw,420px)]';
           const savedMsg = String(g.invitation_message ?? '').trim();
-          if (savedMsg) {
+          const quinceNote = String(g.rsvp_note ?? '').trim();
+          if (savedMsg || quinceNote) {
             const card = document.createElement('div');
             card.className =
               'msg-card rounded-xl border border-outline-variant/60 bg-surface-container-low p-4 shadow-sm';
-            const body = document.createElement('div');
-            body.className = 'msg-body text-sm leading-relaxed text-on-surface whitespace-pre-wrap break-words';
-            body.textContent = savedMsg;
+            if (savedMsg) {
+              const inviteLabel = document.createElement('div');
+              inviteLabel.className =
+                'text-[11px] font-bold uppercase tracking-wide text-on-surface-variant mb-1.5';
+              inviteLabel.textContent = 'Texto de invitación (WhatsApp)';
+              const body = document.createElement('div');
+              body.className =
+                'msg-body text-sm leading-relaxed text-on-surface whitespace-pre-wrap break-words';
+              body.textContent = savedMsg;
+              card.appendChild(inviteLabel);
+              card.appendChild(body);
+            }
+            if (quinceNote) {
+              const noteBlock = document.createElement('div');
+              noteBlock.className = savedMsg ? 'mt-4 pt-4 border-t border-outline-variant/50' : '';
+              const noteLabel = document.createElement('div');
+              noteLabel.className =
+                'text-[11px] font-bold uppercase tracking-wide text-primary mb-1.5';
+              noteLabel.textContent = 'Mensaje para la quinceañera';
+              const noteBody = document.createElement('div');
+              noteBody.className =
+                'rsvp-quince-msg text-sm leading-relaxed text-on-surface whitespace-pre-wrap break-words';
+              noteBody.textContent = quinceNote;
+              noteBlock.appendChild(noteLabel);
+              noteBlock.appendChild(noteBody);
+              card.appendChild(noteBlock);
+            }
             const actions = document.createElement('div');
             actions.className = 'msg-actions mt-3 flex flex-wrap items-center w-full gap-y-2 gap-x-2';
             const wrapCopy = document.createElement('div');
@@ -943,6 +968,7 @@
             btn.type = 'button';
             btn.className = isCopiedRow ? COPY_BTN_CLASS_COPIED : COPY_BTN_CLASS_DEFAULT;
             btn.textContent = isCopiedRow ? 'Copiado' : 'Copiar';
+            btn.title = savedMsg ? 'Copiar texto de invitación' : 'Copiar mensaje para la quinceañera';
             wrapCopy.appendChild(btn);
             const wrapOpen = document.createElement('div');
             wrapOpen.className = 'flex flex-1 justify-center items-center px-2 min-w-[6rem]';
@@ -953,7 +979,6 @@
             actions.appendChild(wrapCopy);
             actions.appendChild(wrapOpen);
             actions.appendChild(wrapWa);
-            card.appendChild(body);
             card.appendChild(actions);
             tdMsg.appendChild(card);
           } else {
@@ -961,7 +986,7 @@
             emptyWrap.className = 'flex flex-col gap-3 max-w-sm';
             const p = document.createElement('p');
             p.className = 'msg-empty text-sm text-on-surface-variant leading-relaxed m-0';
-            p.textContent = 'Sin mensaje. Vuelve a cargar el Excel (paso 1).';
+            p.textContent = 'Sin mensaje de invitación ni nota RSVP. Vuelve a cargar el Excel (paso 1).';
             emptyWrap.appendChild(p);
             const foot = document.createElement('div');
             foot.className = 'flex flex-wrap items-center justify-between gap-3 w-full max-w-md';
@@ -983,8 +1008,10 @@
         tbody.querySelectorAll('.btn-copy-msg').forEach((btn) => {
           btn.addEventListener('click', async () => {
             const tr = btn.closest('tr');
-            const body = tr?.querySelector('.msg-body');
-            const text = body ? String(body.textContent || '').trim() : '';
+            const inviteEl = tr?.querySelector('.msg-body');
+            const quinceEl = tr?.querySelector('.rsvp-quince-msg');
+            let text = inviteEl ? String(inviteEl.textContent || '').trim() : '';
+            if (!text && quinceEl) text = String(quinceEl.textContent || '').trim();
             try {
               if (!text) throw new Error('No hay mensaje para copiar');
               await copyText(text);
