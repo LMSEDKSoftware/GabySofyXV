@@ -342,8 +342,10 @@ app.post('/api/admin/import-guests', adminAuth, upload.single('file'), async (re
     if (prev) {
       const row = {
         ...g,
-        attendance_status: 'pending',
-        confirmed_seats: 0,
+        // Import acumulativo: si ya existe, no reseteamos RSVP.
+        attendance_status: prev.attendance_status ?? 'pending',
+        confirmed_seats: prev.confirmed_seats ?? 0,
+        rsvp_note: prev.rsvp_note ?? null,
         invitation_message: prev.invitation_message ?? null,
         personal_invite_url: prev.personal_invite_url ?? null,
         personal_token_hash: prev.personal_token_hash ?? null,
