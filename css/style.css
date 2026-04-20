@@ -1380,3 +1380,150 @@ footer.inv-footer.reveal.active .inv-sofia-logo--footer {
   transform: none;
   transition: none;
 }
+
+/* ============================================
+   Agenda — línea de tiempo (iconos + hora a la derecha)
+   ============================================ */
+.inv-agenda__date {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(26, 26, 26, 0.52);
+  margin-top: 0.35rem;
+  margin-bottom: 2rem;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+.inv-agenda__timeline {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  max-width: 26rem;
+  text-align: left;
+}
+
+.inv-agenda__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  position: relative;
+  padding-bottom: 1.4rem;
+}
+
+.inv-agenda__row:last-child {
+  padding-bottom: 0;
+}
+
+.inv-agenda__track {
+  position: relative;
+  width: 2.5rem;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  padding-top: 0.12rem;
+}
+
+.inv-agenda__row:not(:last-child) .inv-agenda__track::after {
+  content: '';
+  position: absolute;
+  top: 2.35rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: calc(100% + 0.5rem);
+  background: linear-gradient(
+    180deg,
+    rgba(138, 43, 226, 0.45) 0%,
+    rgba(138, 43, 226, 0.12) 100%
+  );
+  border-radius: 2px;
+}
+
+.inv-agenda__circle {
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 50%;
+  background: rgba(138, 43, 226, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.inv-agenda__circle .material-symbols-outlined {
+  font-size: 1.2rem;
+  font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+  color: var(--vibe-purple);
+  line-height: 1;
+}
+
+.inv-agenda__main {
+  flex: 1;
+  min-width: 0;
+  padding-top: 0.08rem;
+}
+
+.inv-agenda__title {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--inv-ink);
+  line-height: 1.35;
+  margin: 0;
+}
+
+.inv-agenda__sub {
+  list-style: none;
+  padding: 0;
+  margin: 0.45rem 0 0;
+}
+
+.inv-agenda__sub li {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.82rem;
+  color: rgba(26, 26, 26, 0.62);
+  line-height: 1.5;
+  padding-left: 0.65rem;
+  position: relative;
+}
+
+.inv-agenda__sub li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(138, 43, 226, 0.45);
+}
+
+.inv-agenda__time {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--vibe-purple);
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-top: 0.12rem;
+  min-width: 4.1rem;
+  text-align: right;
+}
+
+@media (max-width: 380px) {
+  .inv-agenda__row {
+    flex-wrap: wrap;
+    row-gap: 0.35rem;
+  }
+
+  .inv-agenda__time {
+    width: 100%;
+    text-align: left;
+    padding-left: 3.35rem;
+    margin-top: -0.15rem;
+    min-width: unset;
+  }
+}
